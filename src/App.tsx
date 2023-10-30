@@ -1,5 +1,5 @@
 import "./App.css";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
 import { Counter } from "./components/Counter";
 import { Jetton } from "./components/Jetton";
 import { TransferTon } from "./components/TransferTon";
@@ -8,6 +8,12 @@ import { Button, FlexBoxCol, FlexBoxRow } from "./components/styled/styled";
 import { useTonConnect } from "./hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 import "@twa-dev/sdk";
+import { Address } from "ton-core";
+import { useMasterWallet } from "./hooks/useMasterWallet";
+import { useFundContract } from "./hooks/useFundContract";
+
+
+//TODO: add manifestUrl 
 
 const StyledApp = styled.div`
   background-color: #e8e8e8;
@@ -28,6 +34,28 @@ const AppContainer = styled.div`
 
 function App() {
   const { network } = useTonConnect();
+
+  const {data, balance, sendMint, createFund, getLastFundAddress} = useMasterWallet();
+  const {getFundData} = useFundContract();
+  
+  
+  
+  
+  // createFund()?.then(x => {
+  //   // getFundData()?.then(x => console.log('DATA', x));
+  
+  // });
+
+  // getLastFundAddress()?.then(x => console.log("address - ", x.toString()));
+
+  getFundData()?.then(x => {
+    console.log('DATA', x);
+
+  });
+
+  
+  
+
 
   return (
     <StyledApp>
