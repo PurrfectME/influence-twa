@@ -35,25 +35,8 @@ const AppContainer = styled.div`
 function App() {
   const { network } = useTonConnect();
 
-  const {data, balance, sendMint, createFund, getLastFundAddress} = useMasterWallet();
-  const {getFundData} = useFundContract();
-  
-  
-  
-  
-  // createFund()?.then(x => {
-  //   // getFundData()?.then(x => console.log('DATA', x));
-  
-  // });
-
-  // getLastFundAddress()?.then(x => console.log("address - ", x.toString()));
-
-  getFundData()?.then(x => {
-    console.log('DATA', x);
-
-  });
-
-  
+  const {createFund, getLastFundAddress} = useMasterWallet();
+  const {getFundData, createItem, getLastItemAddress} = useFundContract();
   
 
 
@@ -70,10 +53,15 @@ function App() {
                   : "testnet"
                 : "N/A"}
             </Button>
+            <Button onClick={createFund}>Создать фонд</Button>
+            <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
+            ) }>Адрес фонда</Button>
+            <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
+            <Button onClick={() => {getLastItemAddress()?.then(x => console.log(x.toString())
+            )}}>Адрес зявки фонда</Button>
+            <Button onClick={createItem}>Создать заявку</Button>
           </FlexBoxRow>
-          <Counter />
           <TransferTon />
-          <Jetton />
         </FlexBoxCol>
       </AppContainer>
     </StyledApp>

@@ -1,11 +1,13 @@
 import { OpenedContract } from "ton-core";
-import Fund from "../contracts/fund";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useMasterWallet } from "./useMasterWallet";
+import { useTonConnect } from "./useTonConnect";
+import Fund from "../contracts/fund";
 
 export function useFundContract() {
     const { client } = useTonClient();
+    const { sender } = useTonConnect();
     const { getLastFundAddress } = useMasterWallet();
 
     const fundContract = useAsyncInitialize(async () => {
@@ -18,6 +20,9 @@ export function useFundContract() {
     })
 
     return {
-        getFundData: () => fundContract?.getFundData()
+        getFundData: () => fundContract?.getFundData(),
+        getLastItemAddress: () => fundContract?.getLastItemAddress(),
+        createItem: () => fundContract?.sendCreateItem(sender),
+
     }
 }
