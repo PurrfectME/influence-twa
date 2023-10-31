@@ -3,7 +3,7 @@ import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useMasterWallet } from "./useMasterWallet";
 import { useTonConnect } from "./useTonConnect";
-import Fund from "../contracts/fund";
+import FundContract from "../contracts/fund";
 
 export function useFundContract() {
     const { client } = useTonClient();
@@ -14,9 +14,9 @@ export function useFundContract() {
         if (!client) return;
         const fundAddress = await getLastFundAddress();
         
-        const contract = new Fund(fundAddress!);
+        const contract = new FundContract(fundAddress!);
 
-        return client.open(contract) as OpenedContract<Fund>;
+        return client.open(contract) as OpenedContract<FundContract>;
     })
 
     return {

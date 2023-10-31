@@ -1,7 +1,7 @@
 import { Address, Contract, ContractProvider, Sender, beginCell, toNano } from "ton-core";
 import FundData from "../models/FundData";
 
-export default class Fund implements Contract {
+export default class FundContract implements Contract {
     async getFundItems(provider: ContractProvider) {
         const {stack} = await provider.get("ownerFund", []);
 

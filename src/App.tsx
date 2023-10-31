@@ -11,6 +11,8 @@ import "@twa-dev/sdk";
 import { Address } from "ton-core";
 import { useMasterWallet } from "./hooks/useMasterWallet";
 import { useFundContract } from "./hooks/useFundContract";
+import { useFundItemContract } from "./hooks/useFundItemContract";
+import { FundItem } from "./components/FundItem";
 
 
 //TODO: add manifestUrl 
@@ -62,6 +64,7 @@ function App() {
             <Button onClick={createItem}>Создать заявку</Button>
           </FlexBoxRow>
           <TransferTon />
+          <FundItem address={Address.parse("EQB46IPTKUE_pQEFUZQbWceJvsPKc9kaHz0V9wudGN6gzacN")} />
         </FlexBoxCol>
       </AppContainer>
     </StyledApp>
