@@ -1,4 +1,4 @@
-import { Address, Contract, ContractProvider, Sender, beginCell, toNano } from "ton-core";
+import { Address, Contract, ContractProvider, Dictionary, Sender, beginCell, toNano } from "ton-core";
 import FundData from "../models/FundData";
 
 export default class FundContract implements Contract {
@@ -29,12 +29,22 @@ export default class FundContract implements Contract {
         .storeStringTail("item")
         .endCell();
 
-        console.log('HERE');
-
         await provider.internal(sender, {
             value: toNano("0.2"),
             body: body
         });
+    }
+
+    async getAllItemsAddresses(provider: ContractProvider) {
+        const {stack} = await provider.get("getAllItemsAddresses", []);
+        
+        //TODO: сколько битов 257-битный инт займёт))0)
+        const res = stack.readCell().asSlice().loadDictDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
+
+        console.log('DICT', res);
+
+        return stack;
+        
     }
 
     async getLastItemAddress(provider: ContractProvider){

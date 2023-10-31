@@ -23,6 +23,6 @@ export function useFundContract() {
         getFundData: () => fundContract?.getFundData(),
         getLastItemAddress: () => fundContract?.getLastItemAddress(),
         createItem: () => fundContract?.sendCreateItem(sender),
-
+        getAllAddresses: () => fundContract?.getAllItemsAddresses(),
     }
 }

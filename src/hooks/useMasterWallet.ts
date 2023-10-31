@@ -7,7 +7,7 @@ import { useTonConnect } from "./useTonConnect";
 export function useMasterWallet(){
     const { wallet, sender } = useTonConnect();
     const { client } = useTonClient();
-    const addr = "EQCZjFqdYveDuyOScrCCd0T3ztgdJcxVGVk9wZFqeD-tKNaY";
+    const addr = "EQASijGTuK5jVWsYsTCyxFQa3Iz2JyNwIwA9BUYdPiGBKTUh";
 
     const masterContract = useAsyncInitialize(async () => {
         if (!client || !wallet) return;

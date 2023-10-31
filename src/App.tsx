@@ -13,6 +13,7 @@ import { useMasterWallet } from "./hooks/useMasterWallet";
 import { useFundContract } from "./hooks/useFundContract";
 import { useFundItemContract } from "./hooks/useFundItemContract";
 import { FundItem } from "./components/FundItem";
+import { useAsyncInitialize } from "./hooks/useAsyncInitialize";
 
 
 //TODO: add manifestUrl 
@@ -38,9 +39,15 @@ function App() {
   const { network } = useTonConnect();
 
   const {createFund, getLastFundAddress} = useMasterWallet();
-  const {getFundData, createItem, getLastItemAddress} = useFundContract();
+  const {getFundData, createItem, getLastItemAddress, getAllAddresses} = useFundContract();
   
+  const d = useAsyncInitialize(async () => {
+    const r = await getAllAddresses();
 
+    return r;
+  });
+
+  console.log('ASDASD', d)
 
   return (
     <StyledApp>
