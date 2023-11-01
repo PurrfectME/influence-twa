@@ -5,19 +5,17 @@ import { useAsyncInitialize } from "../hooks/useAsyncInitialize";
 
 export function FundItem({address}: any){
 
-    const {getItemData} = useFundItemContract(address);
 
-    const data = useAsyncInitialize(async () => {
-        const res = await getItemData();
-
-        return res;
-    });
+    const {data} = useFundItemContract(address);
 
     return (
         <Card>
             <FlexBoxCol>
+            <FlexBoxRow>
+                    ITEM ADDRESS: {address.toString()}
+                </FlexBoxRow>
                 <FlexBoxRow>
-                    ITEM ADDRESS: {data?.owner.toString()}
+                    ITEM OWNER: {data?.owner.toString()}
                 </FlexBoxRow>
                 <FlexBoxRow>
                     ITEM NUMBER: {data?.seqno.toString()}

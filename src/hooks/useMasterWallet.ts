@@ -3,19 +3,39 @@ import MasterWallet from "../contracts/masterWallet";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useTonConnect } from "./useTonConnect";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 export function useMasterWallet(){
     const { wallet, sender } = useTonConnect();
     const { client } = useTonClient();
     const addr = "EQASijGTuK5jVWsYsTCyxFQa3Iz2JyNwIwA9BUYdPiGBKTUh";
+    const [lastFundAddress, setLastFundAddress] = useState<Address>();
 
     const masterContract = useAsyncInitialize(async () => {
-        if (!client || !wallet) return;
+        if (!client || !sender.address) return;
         const contract = new MasterWallet(
             Address.parse(addr),
         );
-        return client.open(contract) as OpenedContract<MasterWallet>;
-    }, [client, wallet]);
+        
+        const res = client.open(contract) as OpenedContract<MasterWallet>;
+
+        const i = await res.getLastFundAddress(sender.address);
+        
+        setLastFundAddress(i);
+        return res;
+    }, [client]);
+
+
+    // useEffect(() => {
+    //     async function getAddress() {
+    //         if(!masterContract || !sender) return;
+    //         const res =  await masterContract.getLastFundAddress(sender.address!);
+    //         setLastFundAddress(res);
+    //     }
+
+    //     getAddress();
+    // }, [masterContract]);
 
 
     return {
@@ -23,6 +43,6 @@ export function useMasterWallet(){
         sendMint: () => masterContract?.sendMint(sender, 0.3),
         createFund: () => masterContract?.sendCreateFund(sender),
         balance: masterContract?.address,
-        getLastFundAddress: () => masterContract?.getLastFundAddress(sender.address!)
+        lastFundAddress: lastFundAddress
     }
 }

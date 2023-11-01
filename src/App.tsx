@@ -1,19 +1,19 @@
 import "./App.css";
 import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
 import { Counter } from "./components/Counter";
-import { Jetton } from "./components/Jetton";
 import { TransferTon } from "./components/TransferTon";
 import styled from "styled-components";
 import { Button, FlexBoxCol, FlexBoxRow } from "./components/styled/styled";
 import { useTonConnect } from "./hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 import "@twa-dev/sdk";
-import { Address } from "ton-core";
+import { Address, Dictionary } from "ton-core";
 import { useMasterWallet } from "./hooks/useMasterWallet";
 import { useFundContract } from "./hooks/useFundContract";
 import { useFundItemContract } from "./hooks/useFundItemContract";
 import { FundItem } from "./components/FundItem";
 import { useAsyncInitialize } from "./hooks/useAsyncInitialize";
+import { useEffect, useState } from "react";
 
 
 //TODO: add manifestUrl 
@@ -36,18 +36,29 @@ const AppContainer = styled.div`
 `;
 
 function App() {
+  //TODO: перенести папку wrappers из tact проекта
   const { network } = useTonConnect();
 
-  const {createFund, getLastFundAddress} = useMasterWallet();
-  const {getFundData, createItem, getLastItemAddress, getAllAddresses} = useFundContract();
-  
-  const d = useAsyncInitialize(async () => {
-    const r = await getAllAddresses();
+  const {createFund} = useMasterWallet();
+  const {addresses} = useFundContract();
 
-    return r;
-  });
+  const [dict, setDict] = useState<Address[]>();
 
-  console.log('ASDASD', d)
+  useEffect(() => {
+    if(addresses){
+      let arr: Address[] = [];
+
+      for (let index = 1; index <= addresses.size; index++) {
+        const address = addresses.get(BigInt(index));
+        if(address){
+          arr.push(address);
+        }
+      }
+
+      setDict(arr);
+
+    }
+  }, [addresses]);
 
   return (
     <StyledApp>
@@ -63,15 +74,15 @@ function App() {
                 : "N/A"}
             </Button>
             <Button onClick={createFund}>Создать фонд</Button>
-            <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
-            ) }>Адрес фонда</Button>
-            <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
+            {/* <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
+            ) }>Адрес фонда</Button> */}
+            {/* <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
             <Button onClick={() => {getLastItemAddress()?.then(x => console.log(x.toString())
             )}}>Адрес зявки фонда</Button>
-            <Button onClick={createItem}>Создать заявку</Button>
+            <Button onClick={createItem}>Создать заявку</Button> */}
           </FlexBoxRow>
           <TransferTon />
-          <FundItem address={Address.parse("EQB46IPTKUE_pQEFUZQbWceJvsPKc9kaHz0V9wudGN6gzacN")} />
+          {dict?.map(x => <FundItem address={x} />)}
         </FlexBoxCol>
       </AppContainer>
     </StyledApp>

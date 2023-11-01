@@ -35,16 +35,13 @@ export default class FundContract implements Contract {
         });
     }
 
-    async getAllItemsAddresses(provider: ContractProvider) {
+    async getAllItemsAddresses(provider: ContractProvider): Promise<Dictionary<bigint, Address>> {
         const {stack} = await provider.get("getAllItemsAddresses", []);
         
         //TODO: сколько битов 257-битный инт займёт))0)
         const res = stack.readCell().asSlice().loadDictDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
 
-        console.log('DICT', res);
-
-        return stack;
-        
+        return res;
     }
 
     async getLastItemAddress(provider: ContractProvider){
