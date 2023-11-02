@@ -388,10 +388,10 @@
     "solid-styled-components" "^0.28.5"
     "solid-transition-group" "^0.0.12"
 
-"@twa-dev/sdk@^6.9.0":
-  "integrity" "sha512-HP5LFRoSVqHXoRrjBqTQqTFy1R7TORmykqOucRH8C1ZGgO76u2ezthCFqxk5ERW5WXOm2bVkQf1Hbv9tLaEszg=="
-  "resolved" "https://registry.npmjs.org/@twa-dev/sdk/-/sdk-6.9.0.tgz"
-  "version" "6.9.0"
+"@twa-dev/sdk@^6.9.1":
+  "integrity" "sha512-R+3a/IRG97NFHS1PF+rj/F2n+cwsHtW1LWGVP0pzIzMK709oMy00qJPV0wxbS16hzcvcW9hPVNwHYTPMv4rrEQ=="
+  "resolved" "https://registry.npmjs.org/@twa-dev/sdk/-/sdk-6.9.1.tgz"
+  "version" "6.9.1"
   dependencies:
     "@twa-dev/types" "^6.9.0"
 

@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import img from '../../images/img.jpeg';
 
 export const Card = styled.div`
   padding: 18px 20px;
-  border-radius: 8px;
+  border-radius: 25px;
   background-color: white;
 
   @media (prefers-color-scheme: dark) {
@@ -22,6 +23,31 @@ export const FlexBoxCol = styled.div`
   flex-direction: column;
   gap: 10px;
 `;
+
+export const FundItemBox = styled.div`
+  max-width: 300px;
+  max-height: 500px;
+  height: 250px;
+  width: 150px;
+  border-radius: 25px;
+  background-color: white;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #111;
+  }
+`
+
+export const ImageBox = styled.div`
+  max-width: 300px;
+  max-height: 300px;
+  width: inherit;
+  height: 150px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+
+  background-image: url(${img});
+  background-size: cover;
+`
 
 export const Button = styled.button`
   background-color: ${(props) =>

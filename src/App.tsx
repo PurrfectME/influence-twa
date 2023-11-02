@@ -1,6 +1,5 @@
 import "./App.css";
 import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
-import { Counter } from "./components/Counter";
 import { TransferTon } from "./components/TransferTon";
 import styled from "styled-components";
 import { Button, FlexBoxCol, FlexBoxRow } from "./components/styled/styled";
@@ -14,6 +13,7 @@ import { useFundItemContract } from "./hooks/useFundItemContract";
 import { FundItem } from "./components/FundItem";
 import { useAsyncInitialize } from "./hooks/useAsyncInitialize";
 import { useEffect, useState } from "react";
+import "@twa-dev/sdk";
 
 
 //TODO: add manifestUrl 
@@ -40,7 +40,7 @@ function App() {
   const { network } = useTonConnect();
 
   const {createFund} = useMasterWallet();
-  const {addresses} = useFundContract();
+  const {addresses, createItem} = useFundContract();
 
   const [dict, setDict] = useState<Address[]>();
 
@@ -75,15 +75,19 @@ function App() {
             </Button>
             <Button onClick={createFund}>Создать фонд</Button>
             {/* <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
-            ) }>Адрес фонда</Button> */}
-            {/* <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
+            ) }>Адрес фонда</Button>
+            <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
             <Button onClick={() => {getLastItemAddress()?.then(x => console.log(x.toString())
-            )}}>Адрес зявки фонда</Button>
-            <Button onClick={createItem}>Создать заявку</Button> */}
+            )}}>Адрес зявки фонда</Button> */}
+            <Button onClick={createItem}>Создать заявку</Button>
           </FlexBoxRow>
           <TransferTon />
-          {dict?.map(x => <FundItem address={x} />)}
         </FlexBoxCol>
+        <FlexBoxRow>
+          {dict?.map(x => <FundItem address={x} />)}
+
+
+        </FlexBoxRow>
       </AppContainer>
     </StyledApp>
   );
