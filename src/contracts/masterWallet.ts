@@ -37,6 +37,23 @@ export default class MasterWallet implements Contract {
 
         return stack.readAddress();
     }
+
+    //manual tokens mint
+    //TODO: generate QR code to send via tonkeeper
+    async sendMintTokens(provider: ContractProvider, amount: bigint, receiver: Address, sender: Sender){
+        console.log('ASD', sender.address?.toString());
+        
+        const body = beginCell()
+            .storeUint(4235234258, 32)
+            .storeInt(amount, 257)
+            .storeAddress(receiver)
+            .endCell();
+
+        await provider.internal(sender, {
+            value: amount,
+            body: body
+        });
+    }
     
     constructor(readonly address: Address){
     }

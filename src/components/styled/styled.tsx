@@ -18,6 +18,11 @@ export const FlexBoxRow = styled.div`
   align-items: center;
 `;
 
+export const ItemsRow = styled(FlexBoxRow)`
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+`
+
 export const FlexBoxCol = styled.div`
   display: flex;
   flex-direction: column;

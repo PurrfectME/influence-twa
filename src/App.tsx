@@ -2,7 +2,7 @@ import "./App.css";
 import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
 import { TransferTon } from "./components/TransferTon";
 import styled from "styled-components";
-import { Button, FlexBoxCol, FlexBoxRow } from "./components/styled/styled";
+import { Button, FlexBoxCol, FlexBoxRow, ItemsRow } from "./components/styled/styled";
 import { useTonConnect } from "./hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 import "@twa-dev/sdk";
@@ -39,7 +39,7 @@ function App() {
   //TODO: перенести папку wrappers из tact проекта
   const { network } = useTonConnect();
 
-  const {createFund} = useMasterWallet();
+  const {createFund, mintTokens} = useMasterWallet();
   const {addresses, createItem} = useFundContract();
 
   const [dict, setDict] = useState<Address[]>();
@@ -81,16 +81,20 @@ function App() {
             )}}>Адрес зявки фонда</Button> */}
             <Button onClick={createItem}>Создать заявку</Button>
           </FlexBoxRow>
-          <TransferTon />
+          <TransferTon mintTokens={mintTokens} />
         </FlexBoxCol>
-        <FlexBoxRow>
+        <FlexBoxCol>
+        <ItemsRow>
           {dict?.map(x => <FundItem address={x} />)}
-
-
-        </FlexBoxRow>
+        </ItemsRow>
+        </FlexBoxCol>
       </AppContainer>
     </StyledApp>
   );
+}
+
+export interface IMyProps {
+  mintTokens: (amount: bigint, receiver: Address) => Promise<void> | undefined
 }
 
 export default App;

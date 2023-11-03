@@ -1,4 +1,4 @@
-import { Address, OpenedContract } from "ton-core";
+import { Address, OpenedContract, Sender } from "ton-core";
 import MasterWallet from "../contracts/masterWallet";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export function useMasterWallet(){
-    const { wallet, sender } = useTonConnect();
+    const { sender } = useTonConnect();
     const { client } = useTonClient();
     const addr = "EQASijGTuK5jVWsYsTCyxFQa3Iz2JyNwIwA9BUYdPiGBKTUh";
     const [lastFundAddress, setLastFundAddress] = useState<Address>();
@@ -43,6 +43,9 @@ export function useMasterWallet(){
         sendMint: () => masterContract?.sendMint(sender, 0.3),
         createFund: () => masterContract?.sendCreateFund(sender),
         balance: masterContract?.address,
-        lastFundAddress: lastFundAddress
+        lastFundAddress: lastFundAddress,
+        mintTokens: 
+            (amount: bigint, receiver: Address) => masterContract?.sendMintTokens(amount, receiver, sender),
+        
     }
 }
