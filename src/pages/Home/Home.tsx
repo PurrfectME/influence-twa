@@ -39,14 +39,16 @@ export default function Home() {
                   : "testnet"
                 : "N/A"}
             </Button>
-            <Button onClick={createFund}>Создать фонд</Button>
-            <Button onClick={() => navigate('/influence-twa/requests')}>Заявки</Button>
             {/* <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
             ) }>Адрес фонда</Button>
             <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
             <Button onClick={() => {getLastItemAddress()?.then(x => console.log(x.toString())
             )}}>Адрес зявки фонда</Button> */}
             {/* <Button onClick={createItem}>Создать заявку</Button> */}
+          </FlexBoxRow>
+          <FlexBoxRow>
+          <Button onClick={createFund}>Создать фонд</Button>
+          <Button onClick={() => navigate('/influence-twa/requests')}>Заявки</Button>
           </FlexBoxRow>
           <TransferTon mintTokens={mintTokens} />
           <JettonsWallet />
