@@ -1,4 +1,4 @@
-import { Address, OpenedContract, Sender } from "ton-core";
+import { Address, OpenedContract } from "ton-core";
 import MasterWallet from "../contracts/masterWallet";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
@@ -11,6 +11,7 @@ export function useMasterWallet(){
     const { client } = useTonClient();
     const addr = "EQASijGTuK5jVWsYsTCyxFQa3Iz2JyNwIwA9BUYdPiGBKTUh";
     const [lastFundAddress, setLastFundAddress] = useState<Address>();
+    const [jettonWalletAddress, setJettonWalletAddress] = useState<Address>();
 
     const masterContract = useAsyncInitialize(async () => {
         if (!client || !sender.address) return;
@@ -19,24 +20,14 @@ export function useMasterWallet(){
         );
         
         const res = client.open(contract) as OpenedContract<MasterWallet>;
-
-        const i = await res.getLastFundAddress(sender.address);
+        const fundAddress = await res.getLastFundAddress(sender.address);
+        const jettonAddress = await res.getJettonWalletAddress(sender.address);
         
-        setLastFundAddress(i);
+        setLastFundAddress(fundAddress);
+        setJettonWalletAddress(jettonAddress); 
+
         return res;
     }, [client]);
-
-
-    // useEffect(() => {
-    //     async function getAddress() {
-    //         if(!masterContract || !sender) return;
-    //         const res =  await masterContract.getLastFundAddress(sender.address!);
-    //         setLastFundAddress(res);
-    //     }
-
-    //     getAddress();
-    // }, [masterContract]);
-
 
     return {
         data: () => masterContract?.getJettonData(),
@@ -46,6 +37,7 @@ export function useMasterWallet(){
         lastFundAddress: lastFundAddress,
         mintTokens: 
             (amount: bigint, receiver: Address) => masterContract?.sendMintTokens(amount, receiver, sender),
+        jettonWalletAddress: jettonWalletAddress
         
     }
 }

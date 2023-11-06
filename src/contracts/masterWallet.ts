@@ -54,6 +54,14 @@ export default class MasterWallet implements Contract {
             body: body
         });
     }
+
+    async getJettonWalletAddress(provider: ContractProvider, owner: Address): Promise<Address>{
+        const {stack} = await provider.get("get_wallet_address", [
+            {type: "slice", cell: beginCell().storeAddress(owner).endCell()}
+        ]);
+
+        return stack.readAddress();
+    }
     
     constructor(readonly address: Address){
     }

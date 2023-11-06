@@ -6,12 +6,14 @@ import { useTonConnect } from "./useTonConnect";
 import FundContract from "../contracts/fund";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import FundData from "../models/FundData";
 
 export function useFundContract() {
     const { client } = useTonClient();
     const { sender } = useTonConnect();
     const { lastFundAddress } = useMasterWallet();
-    const [addresses, setAddresses] = useState<Dictionary<bigint, Address> | undefined>()
+    const [addresses, setAddresses] = useState<Dictionary<bigint, Address> | undefined>();
+    const [fundData, setFundData] = useState<FundData>();
 
     const fundContract = useAsyncInitialize(async () => {
         if (!client || !lastFundAddress) return;
@@ -28,11 +30,19 @@ export function useFundContract() {
             setAddresses(res);
         }
 
+        async function getFundData() {
+            if(!fundContract) return;
+
+            const res = await fundContract.getFundData();
+            setFundData(res);
+        }
+
         getAddresses();
+        getFundData();
     }, [fundContract]);
 
     return {
-        getFundData: () => fundContract?.getFundData(),
+        data: fundData,
         getLastItemAddress: () => fundContract?.getLastItemAddress(),
         createItem: () => fundContract?.sendCreateItem(sender),
         addresses: addresses,

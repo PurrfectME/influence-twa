@@ -9,6 +9,8 @@ import "@twa-dev/sdk";
 import { Address, Dictionary } from "ton-core";
 import { useMasterWallet } from "../../hooks/useMasterWallet";
 import { useNavigate } from "react-router-dom";
+import JettonsWallet from "../../components/JettonsWallet";
+import Fund from "../../components/Fund";
 
 
 //TODO: add manifestUrl 
@@ -47,6 +49,8 @@ export default function Home() {
             {/* <Button onClick={createItem}>Создать заявку</Button> */}
           </FlexBoxRow>
           <TransferTon mintTokens={mintTokens} />
+          <JettonsWallet />
+          <Fund />
         </FlexBoxCol>
 
   );
