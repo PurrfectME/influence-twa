@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://PurrfectME.github.io/influence",
+  "homepage": "https://PurrfectME.github.io/influence-twa/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
