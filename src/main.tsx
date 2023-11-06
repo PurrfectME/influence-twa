@@ -41,7 +41,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <AppContainer>
                 <Routes>
                   <Route path="/influence-twa" element={<Home />} />
-                  <Route path="/requests" element={<HelpRequest />} />
+                  <Route path="/influence-twa/requests" element={<HelpRequest />} />
                 </Routes>
               </AppContainer>
             </StyledApp>
