@@ -40,7 +40,7 @@ export default function Home() {
                 : "N/A"}
             </Button>
             <Button onClick={createFund}>Создать фонд</Button>
-            <Button onClick={() => navigate('/requests')}>Заявки</Button>
+            <Button onClick={() => navigate('/influence-twa/requests')}>Заявки</Button>
             {/* <Button onClick={() => getLastFundAddress()?.then(x => console.log(x.toString())
             ) }>Адрес фонда</Button>
             <Button onClick={() => getFundData()?.then(x => console.log(x))}>Данные фонда</Button>
