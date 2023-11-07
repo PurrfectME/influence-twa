@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import img from '../../images/img.jpeg';
+import img from "../../images/img.jpeg";
 
 export const Card = styled.div`
   padding: 18px 20px;
@@ -14,33 +14,36 @@ export const Card = styled.div`
 export const FlexBoxRow = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 10px;
   align-items: center;
 `;
 
 export const ItemsRow = styled(FlexBoxRow)`
   flex-wrap: wrap;
   justify-content: space-evenly;
-`
+`;
 
 export const FlexBoxCol = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+`;
+
+export const Spacer = styled.div<{ height: number }>`
+  height: ${(props) => props.height}px;
 `;
 
 export const FundItemBox = styled.div`
   max-width: 300px;
   max-height: 500px;
-  height: 250px;
-  width: 150px;
+  height: 310px;
+  width: 160px;
   border-radius: 25px;
   background-color: white;
+  border: 1px solid black;
 
   @media (prefers-color-scheme: dark) {
     background-color: #111;
   }
-`
+`;
 
 export const ImageBox = styled.div`
   max-width: 300px;
@@ -52,7 +55,7 @@ export const ImageBox = styled.div`
 
   background-image: url(${img});
   background-size: cover;
-`
+`;
 
 export const Button = styled.button`
   background-color: ${(props) =>
