@@ -1,9 +1,11 @@
-import { Address, fromNano } from "ton-core";
+import { Address, fromNano, toNano } from "ton-core";
 import { useFundItemContract } from "../hooks/useFundItemContract";
 import { FlexBoxCol, FundItemBox, ImageBox, Spacer } from "./styled/styled";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { Box, Button, Container, Grid, Modal, Typography } from "@mui/material";
 import { useState } from "react";
+import useJettonWallet from "../hooks/useJettonWallet";
+import { useMasterWallet } from "../hooks/useMasterWallet";
 
 const style = {
   position: "absolute" as "absolute",
@@ -19,6 +21,8 @@ const style = {
 
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
+  const { sendDonate, data: walletData } = useJettonWallet(address);
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -26,7 +30,7 @@ export function FundItem({ address }: any) {
   return (
     <>
       <FundItemBox>
-        <Grid item onClick={handleOpen}>
+        <Grid container onClick={handleOpen}>
           <ImageBox />
 
           <Grid container padding={"0.6rem"}>
@@ -39,32 +43,30 @@ export function FundItem({ address }: any) {
               </Grid>
             </Grid>
             <Grid container>
-              <Grid item xs>
-                <ProgressBar height="10px" completed={40} maxCompleted={100} />
-              </Grid>
               <Grid container direction="row" justifyContent={"space-between"}>
                 <Grid item>
-                  <Typography style={{ fontSize: "10px" }}>INF:</Typography>
-                  {data ? fromNano(data?.currentAmount) : ""}
+                  <Typography style={{ fontSize: "10px" }}>
+                    Собрано:{" "}
+                    {walletData ? `${fromNano(walletData?.balance)} INF` : ""}
+                  </Typography>
                 </Grid>
                 <Grid item>
                   <Typography style={{ fontSize: "10px" }}>
-                    Need INF:
-                  </Typography>{" "}
-                  {data ? fromNano(data?.amountToHelp) : ""}
+                    Нужно: {data ? `${fromNano(data?.amountToHelp)} INF` : ""}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid container justifyContent={"center"} mt={"10px"}>
+        <Grid container justifyContent={"center"} mt={"30px"}>
           <Grid item>
             <Button
               style={{ backgroundColor: "var(--tg-theme-button-color)" }}
               size="small"
               variant="contained"
-              onClick={() => {}}
+              onClick={() => sendDonate(address as Address, toNano("1"))}
             >
               <Typography style={{ fontSize: "10px" }}>Donate!</Typography>
             </Button>

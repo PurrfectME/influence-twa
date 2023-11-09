@@ -7,39 +7,40 @@ import InfluenceJettonWallet from "../contracts/jettonWallet";
 import { useEffect, useState } from "react";
 import JettonWalletData from "../models/JettonWalletData";
 
-export default function useJettonWallet(){
-    const { client } = useTonClient();
-    const {jettonWalletAddress} = useMasterWallet();
-    const [walletData, setWalletData] = useState<JettonWalletData>();
+export default function useJettonWallet(owner: Address) {
+  const { client } = useTonClient();
+  const { sender } = useTonConnect();
+  const { getJettonWalletAddress, isInitialized } = useMasterWallet();
+  const [walletData, setWalletData] = useState<JettonWalletData>();
 
-    const jettonWalletContract = useAsyncInitialize(async () => {
-        if (!client || !jettonWalletAddress) return;
+  const jettonWalletContract = useAsyncInitialize(async () => {
+    if (!client || !isInitialized) return;
 
-        const contract = new InfluenceJettonWallet(
-            jettonWalletAddress,
-        );
-        
-        const res = client.open(contract) as OpenedContract<InfluenceJettonWallet>;
-        return res;
+    const jettonWalletAddress = await getJettonWalletAddress(owner);
 
-        
-    }, [client, jettonWalletAddress]);
+    if (!jettonWalletAddress) return;
 
-    useEffect(() => {
-        async function getWalletData() {
-            if(!jettonWalletContract) return;
+    const contract = new InfluenceJettonWallet(jettonWalletAddress);
 
-            const res = await jettonWalletContract.getWalletData();
-            
-            setWalletData(res);
-        }
+    const res = client.open(contract) as OpenedContract<InfluenceJettonWallet>;
+    return res;
+  }, [client, isInitialized]);
 
-        getWalletData();
+  useEffect(() => {
+    async function getWalletData() {
+      if (!jettonWalletContract) return;
 
-    }, [jettonWalletContract]);
+      const res = await jettonWalletContract.getWalletData();
 
-
-    return {
-        data: walletData
+      setWalletData(res);
     }
+
+    getWalletData();
+  }, [jettonWalletContract]);
+
+  return {
+    data: walletData,
+    sendDonate: (destination: Address, amount: bigint) =>
+      jettonWalletContract?.sendDonate(sender, destination, amount),
+  };
 }

@@ -9,42 +9,44 @@ import { useEffect, useState } from "react";
 import FundData from "../models/FundData";
 
 export function useFundContract() {
-    const { client } = useTonClient();
-    const { sender } = useTonConnect();
-    const { lastFundAddress } = useMasterWallet();
-    const [addresses, setAddresses] = useState<Dictionary<bigint, Address> | undefined>();
-    const [fundData, setFundData] = useState<FundData>();
+  const { client } = useTonClient();
+  const { sender } = useTonConnect();
+  const { lastFundAddress, address } = useMasterWallet();
+  const [addresses, setAddresses] = useState<
+    Dictionary<bigint, Address> | undefined
+  >();
+  const [fundData, setFundData] = useState<FundData>();
 
-    const fundContract = useAsyncInitialize(async () => {
-        if (!client || !lastFundAddress) return;
-        
-        const contract = new FundContract(lastFundAddress!);
+  const fundContract = useAsyncInitialize(async () => {
+    if (!client || !lastFundAddress) return;
 
-        return client.open(contract) as OpenedContract<FundContract>;
-    }, [client, lastFundAddress]);
+    const contract = new FundContract(lastFundAddress!);
 
-    useEffect(() => {
-        async function getAddresses() {
-            if(!fundContract) return;
-            const res =  await fundContract.getAllItemsAddresses();
-            setAddresses(res);
-        }
+    return client.open(contract) as OpenedContract<FundContract>;
+  }, [client, lastFundAddress]);
 
-        async function getFundData() {
-            if(!fundContract) return;
-
-            const res = await fundContract.getFundData();
-            setFundData(res);
-        }
-
-        getAddresses();
-        getFundData();
-    }, [fundContract]);
-
-    return {
-        data: fundData,
-        getLastItemAddress: () => fundContract?.getLastItemAddress(),
-        createItem: () => fundContract?.sendCreateItem(sender),
-        addresses: addresses,
+  useEffect(() => {
+    async function getAddresses() {
+      if (!fundContract) return;
+      const res = await fundContract.getAllItemsAddresses(address!);
+      setAddresses(res);
     }
+
+    async function getFundData() {
+      if (!fundContract) return;
+
+      const res = await fundContract.getFundData();
+      setFundData(res);
+    }
+
+    getAddresses();
+    getFundData();
+  }, [fundContract]);
+
+  return {
+    data: fundData,
+    getLastItemAddress: () => fundContract?.getLastItemAddress(),
+    createItem: () => fundContract?.sendCreateItem(sender, address!),
+    addresses: addresses,
+  };
 }
