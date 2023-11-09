@@ -14,7 +14,7 @@ import Fund from "../../components/Fund";
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
-  const { network, connected } = useTonConnect();
+  const { network, sender } = useTonConnect();
   const navigate = useNavigate();
   const { createFund, mintTokens } = useMasterWallet();
 
@@ -39,7 +39,7 @@ export default function Home() {
         </Button>
       </FlexBoxRow>
       <TransferTon mintTokens={mintTokens} />
-      <JettonsWallet />
+      <JettonsWallet owner={sender.address} />
       <Fund />
     </FlexBoxCol>
   );

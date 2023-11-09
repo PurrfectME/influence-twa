@@ -9,7 +9,6 @@ export default class FundItemData {
   deployTime: bigint;
   imageUrl: String;
   seqno: bigint;
-  balance: bigint;
 
   constructor(
     owner: Address,
@@ -19,8 +18,7 @@ export default class FundItemData {
     title: String,
     deployTime: bigint,
     imageUrl: String,
-    seqno: bigint,
-    balance: bigint
+    seqno: bigint
   ) {
     this.owner = owner;
     this.description = description;
@@ -30,6 +28,5 @@ export default class FundItemData {
     this.deployTime = deployTime;
     this.imageUrl = imageUrl;
     this.seqno = seqno;
-    this.balance = balance;
   }
 }

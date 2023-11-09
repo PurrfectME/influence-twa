@@ -11,6 +11,7 @@ import { useFundContract } from "../../hooks/useFundContract";
 import { FundItem } from "../../components/FundItem";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
+import { useTonConnect } from "../../hooks/useTonConnect";
 
 export default function HelpRequest() {
   const navigate = useNavigate();

@@ -40,15 +40,8 @@ export default class FundContract implements Contract {
     };
   }
 
-  async sendCreateItem(
-    provider: ContractProvider,
-    sender: Sender,
-    masterContract: Address
-  ) {
-    const body = beginCell()
-      .storeUint(3079652423, 32)
-      .storeAddress(masterContract)
-      .endCell();
+  async sendCreateItem(provider: ContractProvider, sender: Sender) {
+    const body = beginCell().storeUint(0, 32).storeStringTail("item").endCell();
 
     await provider.internal(sender, {
       value: toNano("0.2"),
@@ -57,15 +50,9 @@ export default class FundContract implements Contract {
   }
 
   async getAllItemsAddresses(
-    provider: ContractProvider,
-    masterContract: Address
+    provider: ContractProvider
   ): Promise<Dictionary<bigint, Address>> {
-    const { stack } = await provider.get("getAllItemsAddresses", [
-      {
-        type: "slice",
-        cell: beginCell().storeAddress(masterContract).endCell(),
-      },
-    ]);
+    const { stack } = await provider.get("getAllItemsAddresses", []);
 
     //TODO: сколько битов 257-битный инт займёт))0)
     const res = stack

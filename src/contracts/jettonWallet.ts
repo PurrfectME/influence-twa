@@ -30,6 +30,8 @@ export default class InfluenceJettonWallet implements Contract {
     destination: Address,
     amount: bigint
   ) {
+    console.log("DEST", destination.toString());
+
     const body = beginCell()
       //TOKEN TRANSFER MESSAGE
       .storeUint(260734629, 32)
@@ -43,7 +45,7 @@ export default class InfluenceJettonWallet implements Contract {
       .endCell();
 
     await provider.internal(sender, {
-      value: toNano("0.5"),
+      value: toNano("0.3"),
       body: body,
     });
   }

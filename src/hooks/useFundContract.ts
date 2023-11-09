@@ -28,7 +28,7 @@ export function useFundContract() {
   useEffect(() => {
     async function getAddresses() {
       if (!fundContract) return;
-      const res = await fundContract.getAllItemsAddresses(address!);
+      const res = await fundContract.getAllItemsAddresses();
       setAddresses(res);
     }
 
@@ -46,7 +46,7 @@ export function useFundContract() {
   return {
     data: fundData,
     getLastItemAddress: () => fundContract?.getLastItemAddress(),
-    createItem: () => fundContract?.sendCreateItem(sender, address!),
+    createItem: () => fundContract?.sendCreateItem(sender),
     addresses: addresses,
   };
 }

@@ -6,6 +6,7 @@ import { Box, Button, Container, Grid, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 import useJettonWallet from "../hooks/useJettonWallet";
 import { useMasterWallet } from "../hooks/useMasterWallet";
+import { useTonConnect } from "../hooks/useTonConnect";
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,7 +22,14 @@ const style = {
 
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
-  const { sendDonate, data: walletData } = useJettonWallet(address);
+  const { sender } = useTonConnect();
+  // console.log(address.toString());
+
+  const { data: walletData } = useJettonWallet(address);
+
+  console.log("sender", sender.address?.toString());
+
+  const { sendDonate } = useJettonWallet(sender.address!);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -66,7 +74,7 @@ export function FundItem({ address }: any) {
               style={{ backgroundColor: "var(--tg-theme-button-color)" }}
               size="small"
               variant="contained"
-              onClick={() => sendDonate(address as Address, toNano("1"))}
+              onClick={() => sendDonate(address as Address, toNano("0.5"))}
             >
               <Typography style={{ fontSize: "10px" }}>Donate!</Typography>
             </Button>

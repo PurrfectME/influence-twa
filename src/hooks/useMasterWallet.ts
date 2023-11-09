@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 export function useMasterWallet() {
   const { sender } = useTonConnect();
   const { client } = useTonClient();
-  const addr = "EQB4LwkJduXzRnfQXg-TlubjtlZBpzbtR1OHMQGi1OLyQair";
+  const addr = "EQAZpERzeN59gUYj2Z5aR9aHBZ8VV1ZcUEn--Z-zxqON77v_";
   const [lastFundAddress, setLastFundAddress] = useState<Address>();
   const [jettonWalletAddress, setJettonWalletAddress] = useState<Address>();
   const [isInitialized, setIsInitialized] = useState(false);

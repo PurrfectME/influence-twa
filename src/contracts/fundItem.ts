@@ -21,7 +21,6 @@ export default class FundItemContract implements Contract {
     const deployTime = stack.readBigNumber();
     const imageUrl = stack.readString();
     const seqno = stack.readBigNumber();
-    const balance = stack.readBigNumber();
 
     return {
       owner,
@@ -32,7 +31,6 @@ export default class FundItemContract implements Contract {
       deployTime,
       imageUrl,
       seqno,
-      balance,
     };
   }
 

@@ -17,6 +17,7 @@ export default function useJettonWallet(owner: Address) {
     if (!client || !isInitialized) return;
 
     const jettonWalletAddress = await getJettonWalletAddress(owner);
+    console.log("ASDSA", jettonWalletAddress?.toString());
 
     if (!jettonWalletAddress) return;
 
