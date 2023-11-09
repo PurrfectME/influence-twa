@@ -2,34 +2,44 @@ import { Address, fromNano, toNano } from "ton-core";
 import { useFundItemContract } from "../hooks/useFundItemContract";
 import { FlexBoxCol, FundItemBox, ImageBox, Spacer } from "./styled/styled";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { Box, Button, Container, Grid, Modal, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Modal,
+  Slide,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import useJettonWallet from "../hooks/useJettonWallet";
 import { useMasterWallet } from "../hooks/useMasterWallet";
 import { useTonConnect } from "../hooks/useTonConnect";
+import React from "react";
+import { TransitionProps } from "@mui/material/transitions";
+import { useTonConnectUI } from "@tonconnect/ui-react";
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
-  const { sender } = useTonConnect();
-  // console.log(address.toString());
-
+  const { sender, connected } = useTonConnect();
   const { data: walletData } = useJettonWallet(address);
-
-  console.log("sender", sender.address?.toString());
-
   const { sendDonate } = useJettonWallet(sender.address!);
+  const [tonConnectUI] = useTonConnectUI();
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -68,13 +78,20 @@ export function FundItem({ address }: any) {
           </Grid>
         </Grid>
 
-        <Grid container justifyContent={"center"} mt={"30px"}>
+        <Grid container justifyContent={"center"} mt={"10px"}>
           <Grid item>
             <Button
               style={{ backgroundColor: "var(--tg-theme-button-color)" }}
               size="small"
               variant="contained"
-              onClick={() => sendDonate(address as Address, toNano("0.5"))}
+              onClick={() => {
+                if (!connected) {
+                  //show modal
+                  handleOpen();
+                }
+
+                sendDonate(address as Address, toNano("0.5"));
+              }}
             >
               <Typography style={{ fontSize: "10px" }}>Donate!</Typography>
             </Button>
@@ -83,21 +100,35 @@ export function FundItem({ address }: any) {
       </FundItemBox>
 
       {/* TODO: move to file */}
-      <Modal
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Dialog
         open={open}
+        TransitionComponent={Transition}
+        keepMounted
         onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
+        <DialogTitle>
+          {"To donate you have to connect your ton wallet!"}
+        </DialogTitle>
+        {/* <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Connect your ton wallet
+          </DialogContentText>
+        </DialogContent> */}
+        <DialogActions>
+          <Button onClick={handleClose}>Later</Button>
+          <Button
+            onClick={() => {
+              //IF NO INF TOKENS ON WALLET BUY SOME
+              handleClose();
+
+              tonConnectUI.connectWallet();
+            }}
+          >
+            Connect
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

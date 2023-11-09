@@ -19,9 +19,7 @@ export default function useJettonWallet(owner: Address) {
     const jettonWalletAddress = await getJettonWalletAddress(owner);
     console.log("ASDSA", jettonWalletAddress?.toString());
 
-    if (!jettonWalletAddress) return;
-
-    const contract = new InfluenceJettonWallet(jettonWalletAddress);
+    const contract = new InfluenceJettonWallet(jettonWalletAddress!);
 
     const res = client.open(contract) as OpenedContract<InfluenceJettonWallet>;
     return res;

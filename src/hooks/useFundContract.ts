@@ -11,19 +11,21 @@ import FundData from "../models/FundData";
 export function useFundContract() {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
-  const { lastFundAddress, address } = useMasterWallet();
+  // const { isInitialized } = useMasterWallet();
   const [addresses, setAddresses] = useState<
     Dictionary<bigint, Address> | undefined
   >();
   const [fundData, setFundData] = useState<FundData>();
 
   const fundContract = useAsyncInitialize(async () => {
-    if (!client || !lastFundAddress) return;
+    if (!client) return;
 
-    const contract = new FundContract(lastFundAddress!);
+    const contract = new FundContract(
+      Address.parse("EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD")
+    );
 
     return client.open(contract) as OpenedContract<FundContract>;
-  }, [client, lastFundAddress]);
+  }, [client]);
 
   useEffect(() => {
     async function getAddresses() {
