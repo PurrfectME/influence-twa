@@ -27,9 +27,6 @@ export default function Home() {
   const [dict, setDict] = useState<Address[]>();
 
   useEffect(() => {
-    // if (client) {
-    //   console.log("DATA", client);
-    // }
     if (addresses) {
       let arr: Address[] = [];
 
@@ -49,7 +46,7 @@ export default function Home() {
       <FlexBoxRow>
         {/* TODO: open connect modal manually
             TODO: https://github.com/ton-connect/sdk/tree/main/packages/ui#call-connect */}
-        <TonConnectButton />
+        <TonConnectButton style={{ left: -150 }} />
         <Button>
           {network
             ? network === CHAIN.MAINNET

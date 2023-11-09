@@ -25,7 +25,7 @@ export function useTonConnect(): {
           validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes for user to approve
         });
       },
-      address: wallet ? Address.parse(wallet?.account.address!) : undefined
+      address: wallet ? Address.parse(wallet.account.address) : undefined,
     },
     connected: !!wallet?.account.address,
     wallet: wallet ?? null,

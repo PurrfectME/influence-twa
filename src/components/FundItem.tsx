@@ -23,32 +23,30 @@ import { useMasterWallet } from "../hooks/useMasterWallet";
 import { useTonConnect } from "../hooks/useTonConnect";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
-import { useTonConnectUI } from "@tonconnect/ui-react";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { ConnectedWallet, useTonConnectUI } from "@tonconnect/ui-react";
+import { ConnectWalletDialog } from "./ConnectWalletDialog";
 
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
   const { sender, connected } = useTonConnect();
-  const { data: walletData } = useJettonWallet(address);
+  const { data: itemJettonWallet } = useJettonWallet(address);
+  const { data: userJettonWallet } = useJettonWallet(sender.address);
+
   const { sendDonate } = useJettonWallet(sender.address!);
   const [tonConnectUI] = useTonConnectUI();
+  const [dialogMessage, setDialogMessage] = useState<String>();
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (message: String) => {
+    setDialogMessage(message);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   return (
     <>
       <FundItemBox>
-        <Grid container onClick={handleOpen}>
+        <Grid container onClick={() => {}}>
           <ImageBox />
 
           <Grid container padding={"0.6rem"}>
@@ -65,7 +63,9 @@ export function FundItem({ address }: any) {
                 <Grid item>
                   <Typography style={{ fontSize: "10px" }}>
                     Собрано:{" "}
-                    {walletData ? `${fromNano(walletData?.balance)} INF` : ""}
+                    {itemJettonWallet
+                      ? `${fromNano(itemJettonWallet?.balance)} INF`
+                      : ""}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -87,7 +87,15 @@ export function FundItem({ address }: any) {
               onClick={() => {
                 if (!connected) {
                   //show modal
-                  handleOpen();
+                  handleOpen("To donate you have to connect your ton wallet!");
+                  return;
+                }
+
+                console.log("BALANCE", userJettonWallet?.balance);
+
+                if (userJettonWallet?.balance == BigInt(0)) {
+                  handleOpen("You don't have any INF tokens. Buy some");
+                  return;
                 }
 
                 sendDonate(address as Address, toNano("0.5"));
@@ -99,36 +107,19 @@ export function FundItem({ address }: any) {
         </Grid>
       </FundItemBox>
 
-      {/* TODO: move to file */}
-      <Dialog
+      <ConnectWalletDialog
         open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>
-          {"To donate you have to connect your ton wallet!"}
-        </DialogTitle>
-        {/* <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Connect your ton wallet
-          </DialogContentText>
-        </DialogContent> */}
-        <DialogActions>
-          <Button onClick={handleClose}>Later</Button>
-          <Button
-            onClick={() => {
-              //IF NO INF TOKENS ON WALLET BUY SOME
-              handleClose();
-
-              tonConnectUI.connectWallet();
-            }}
-          >
-            Connect
-          </Button>
-        </DialogActions>
-      </Dialog>
+        dialogMessage={"To donate you have to connect your ton wallet!"}
+        handleClose={handleClose}
+        connectWallet={() => tonConnectUI.connectWallet()}
+      />
     </>
   );
+}
+
+export interface IDialogProps {
+  dialogMessage: String;
+  open: boolean;
+  handleClose: () => void;
+  connectWallet: () => Promise<ConnectedWallet> | undefined;
 }

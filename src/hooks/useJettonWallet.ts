@@ -7,14 +7,14 @@ import InfluenceJettonWallet from "../contracts/jettonWallet";
 import { useEffect, useState } from "react";
 import JettonWalletData from "../models/JettonWalletData";
 
-export default function useJettonWallet(owner: Address) {
+export default function useJettonWallet(owner: Address | undefined) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const { getJettonWalletAddress, isInitialized } = useMasterWallet();
   const [walletData, setWalletData] = useState<JettonWalletData>();
 
   const jettonWalletContract = useAsyncInitialize(async () => {
-    if (!client || !isInitialized) return;
+    if (!client || !isInitialized || !owner) return;
 
     const jettonWalletAddress = await getJettonWalletAddress(owner);
     console.log("ASDSA", jettonWalletAddress?.toString());

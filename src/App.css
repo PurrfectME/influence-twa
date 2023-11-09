@@ -3,3 +3,7 @@
   --tg-theme-button-color: #2eaddc;
   --tg-theme-button-text-color: white;
 }
+
+div > #tc-dropdown-container {
+  left: 9px !important;
+}

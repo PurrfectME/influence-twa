@@ -19,8 +19,9 @@ export function TransferTon(props: IMyProps) {
         <FlexBoxRow>
           <label>Amount </label>
           <Input
+            disabled={!connected}
             style={{ marginRight: 8 }}
-            type="number"
+            type="digits"
             value={tonAmount}
             onChange={(e) => setTonAmount(e.target.value)}
           ></Input>
@@ -29,12 +30,15 @@ export function TransferTon(props: IMyProps) {
           disabled={!connected}
           style={{ marginTop: 18 }}
           onClick={() => {
-            if(wallet){
-              props.mintTokens(toNano(tonAmount), Address.parse(wallet.account.address));
+            if (wallet) {
+              props.mintTokens(
+                toNano(tonAmount),
+                Address.parse(wallet.account.address)
+              );
             }
           }}
         >
-          Transfer
+          Buy
         </Button>
       </FlexBoxCol>
     </Card>
