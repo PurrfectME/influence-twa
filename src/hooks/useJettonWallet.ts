@@ -10,35 +10,46 @@ import JettonWalletData from "../models/JettonWalletData";
 export default function useJettonWallet(owner: Address | undefined) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
-  const { getJettonWalletAddress, isInitialized } = useMasterWallet();
+  const { getJettonWalletAddress, isInitialized: isMasterInitialized } =
+    useMasterWallet();
   const [walletData, setWalletData] = useState<JettonWalletData>();
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const jettonWalletContract = useAsyncInitialize(async () => {
-    if (!client || !isInitialized || !owner) return;
+    if (!client || !isMasterInitialized || !owner) return;
 
     const jettonWalletAddress = await getJettonWalletAddress(owner);
-    console.log("ASDSA", jettonWalletAddress?.toString());
 
     const contract = new InfluenceJettonWallet(jettonWalletAddress!);
 
     const res = client.open(contract) as OpenedContract<InfluenceJettonWallet>;
+
+    const data = await res.getWalletData();
+
+    setWalletData(data);
+
     return res;
-  }, [client, isInitialized]);
+  }, [client, isMasterInitialized]);
 
-  useEffect(() => {
-    async function getWalletData() {
-      if (!jettonWalletContract) return;
+  // useEffect(() => {
+  //   if (!jettonWalletContract) return;
 
-      const res = await jettonWalletContract.getWalletData();
+  //   setIsInitialized(true);
 
-      setWalletData(res);
-    }
+  //   async function getWalletData() {
+  //     if (!jettonWalletContract) return;
 
-    getWalletData();
-  }, [jettonWalletContract]);
+  //     const res = await jettonWalletContract.getWalletData();
+
+  //     setWalletData(res);
+  //   }
+
+  //   getWalletData();
+  // }, [jettonWalletContract]);
 
   return {
     data: walletData,
+    isInitialized,
     sendDonate: (destination: Address, amount: bigint) =>
       jettonWalletContract?.sendDonate(sender, destination, amount),
   };
