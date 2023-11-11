@@ -1,68 +1,91 @@
-import { Address, Contract, ContractProvider, Sender, beginCell, contractAddress, fromNano, toNano } from "ton-core";
+import {
+  Address,
+  Contract,
+  ContractProvider,
+  Sender,
+  beginCell,
+  contractAddress,
+  fromNano,
+  toNano,
+} from "ton-core";
+import JettonData from "../models/JettonData";
 
 export default class MasterWallet implements Contract {
-    async getJettonData(provider: ContractProvider) {
-        const {stack} = await provider.get("bebe", []);
-        
-        return fromNano(stack.readBigNumber());
-    }
+  async getJettonData(provider: ContractProvider): Promise<JettonData> {
+    const { stack } = await provider.get("get_jetton_data", []);
 
-    async sendMint(provider: ContractProvider, via: Sender, amount: number) {
-        const body = beginCell()
-            .storeUint(0, 32)
-            .storeStringTail('buy')
-            .endCell();
-        await provider.internal(via, {
-            value: toNano(amount),
-            body: body
-        }, );
-    }
+    const totalSupply = stack.readBigNumber();
+    const mintable = stack.readBoolean();
+    const owner = stack.readAddress();
+    const content = stack.readCell();
+    const walletCode = stack.readCell();
 
-    async sendCreateFund(provider: ContractProvider, via: Sender){
-        const body = beginCell()
-        .storeUint(0, 32)
-        .storeStringTail("fund")
-        .endCell();
+    return {
+      totalSupply,
+      mintable,
+      owner,
+      content,
+      walletCode,
+    };
+  }
 
-        await provider.internal(via, {
-            value: toNano("0.5"),
-            body: body
-        }, );
-    }
+  async sendMint(provider: ContractProvider, via: Sender, amount: number) {
+    const body = beginCell().storeUint(0, 32).storeStringTail("buy").endCell();
+    await provider.internal(via, {
+      value: toNano(amount),
+      body: body,
+    });
+  }
 
-    async getLastFundAddress(provider: ContractProvider, sender: Address){
-        const {stack} = await provider.get("lastFundAddress", [
-            {type: "slice", cell: beginCell().storeAddress(sender).endCell()}
-        ]);
+  async sendCreateFund(provider: ContractProvider, via: Sender) {
+    const body = beginCell().storeUint(0, 32).storeStringTail("fund").endCell();
 
-        return stack.readAddress();
-    }
+    await provider.internal(via, {
+      value: toNano("0.5"),
+      body: body,
+    });
+  }
 
-    //manual tokens mint
-    //TODO: generate QR code to send via tonkeeper
-    async sendMintTokens(provider: ContractProvider, amount: bigint, receiver: Address, sender: Sender){
-        console.log('ASD', sender.address?.toString());
-        
-        const body = beginCell()
-            .storeUint(4235234258, 32)
-            .storeInt(amount, 257)
-            .storeAddress(receiver)
-            .endCell();
+  async getLastFundAddress(provider: ContractProvider, sender: Address) {
+    const { stack } = await provider.get("lastFundAddress", [
+      { type: "slice", cell: beginCell().storeAddress(sender).endCell() },
+    ]);
 
-        await provider.internal(sender, {
-            value: amount,
-            body: body
-        });
-    }
+    return stack.readAddress();
+  }
 
-    async getJettonWalletAddress(provider: ContractProvider, owner: Address): Promise<Address>{
-        const {stack} = await provider.get("get_wallet_address", [
-            {type: "slice", cell: beginCell().storeAddress(owner).endCell()}
-        ]);
+  //manual tokens mint
+  //TODO: generate QR code to send via tonkeeper
+  async sendMintTokens(
+    provider: ContractProvider,
+    amount: bigint,
+    receiver: Address,
+    sender: Sender
+  ) {
+    console.log("ASD", sender.address?.toString());
 
-        return stack.readAddress();
-    }
-    
-    constructor(readonly address: Address){
-    }
+    const body = beginCell()
+      .storeUint(4235234258, 32)
+      .storeInt(amount, 257)
+      .storeAddress(receiver)
+      .endCell();
+
+    await provider.internal(sender, {
+      value: amount,
+      body: body,
+    });
+  }
+
+  async getJettonWalletAddress(
+    provider: ContractProvider,
+    owner: Address
+  ): Promise<Address> {
+    const { stack } = await provider.get("get_wallet_address", [
+      { type: "slice", cell: beginCell().storeAddress(owner).endCell() },
+    ]);
+
+    return stack.readAddress();
+  }
+
+  constructor(readonly address: Address) {}
 }

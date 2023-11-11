@@ -11,7 +11,14 @@ import { useMasterWallet } from "../../hooks/useMasterWallet";
 import { useNavigate } from "react-router-dom";
 import JettonsWallet from "../../components/JettonsWallet";
 import Fund from "../../components/Fund";
-import { Grid } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardMedia,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useFundContract } from "../../hooks/useFundContract";
 import { useEffect, useState } from "react";
 import { FundItem } from "../../components/FundItem";
@@ -24,21 +31,15 @@ export default function Home() {
   const wallet = useTonWallet();
   const { client } = useTonClient();
   const navigate = useNavigate();
-  const { createFund, mintTokens, jettonWalletAddress, address } =
-    useMasterWallet();
+  const { createFund, mintTokens, jettonData } = useMasterWallet();
   const { addresses } = useFundContract();
 
   const [dict, setDict] = useState<Address[]>();
   const [tonBalance, setTonBalance] = useState<bigint>();
-  const [jettonBalance, setJettonBalance] = useState<bigint>();
 
-  const { data } = useJettonWallet(sender.address);
+  const { data: jettonWallet } = useJettonWallet(sender.address);
 
   useEffect(() => {
-    if (data) {
-      setJettonBalance(data.balance);
-    }
-
     if (addresses) {
       let arr: Address[] = [];
 
@@ -80,8 +81,30 @@ export default function Home() {
         </Button>
         {connected ? (
           <>
-            <Button>{tonBalance ? fromNano(tonBalance) : 0} TON</Button>
-            <Button>{data ? fromNano(data.balance) : 0} INF</Button>
+            <Grid
+              container
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"row"}
+            >
+              <Grid container display={"flex"} flexDirection={"row"}>
+                <Grid item>
+                  {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
+                </Grid>
+              </Grid>
+              <Grid container display={"flex"} flexDirection={"row"}>
+                <Grid item>
+                  {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
+                </Grid>
+                <Grid width={"30px"} height={"30px"} item borderRadius={"10px"}>
+                  <img
+                    width={"30px"}
+                    height={"30px"}
+                    src={jettonData ? `${jettonData.image}` : ""}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
           </>
         ) : (
           <div>not connected</div>
@@ -94,7 +117,7 @@ export default function Home() {
         </Button>
       </FlexBoxRow>
       <TransferTon mintTokens={mintTokens} />
-      <JettonsWallet owner={sender.address} />
+      {/* <JettonsWallet owner={sender.address} /> */}
       {/* <Fund /> */}
 
       <Grid container justifyContent={"center"} mt={"20px"}>

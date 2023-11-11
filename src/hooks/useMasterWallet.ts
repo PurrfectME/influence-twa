@@ -1,10 +1,38 @@
-import { Address, OpenedContract } from "ton-core";
+import {
+  Address,
+  BitBuilder,
+  BitReader,
+  BitString,
+  Cell,
+  Dictionary,
+  OpenedContract,
+  Slice,
+} from "ton-core";
 import MasterWallet from "../contracts/masterWallet";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useTonConnect } from "./useTonConnect";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { sha256_sync } from "ton-crypto";
+
+const toKey = (key: string) => {
+  return BigInt(`0x${sha256_sync(key).toString("hex")}`);
+};
+
+const parseJettonData = (dict: Slice) => {
+  dict.loadBits(8);
+  const dic = dict.loadDict(
+    Dictionary.Keys.BigUint(256),
+    Dictionary.Values.Cell()
+  );
+  const name = dic.get(toKey("name"))?.asSlice().loadStringTail();
+  const description = dic.get(toKey("description"))?.asSlice().loadStringTail();
+  const image = dic.get(toKey("image"))?.asSlice().loadStringTail();
+  const symbol = dic.get(toKey("symbol"))?.asSlice().loadStringTail();
+
+  return { name, description, image, symbol };
+};
 
 export function useMasterWallet() {
   const { sender } = useTonConnect();
@@ -12,6 +40,12 @@ export function useMasterWallet() {
   const addr = "EQAZpERzeN59gUYj2Z5aR9aHBZ8VV1ZcUEn--Z-zxqON77v_";
   const [jettonWalletAddress, setJettonWalletAddress] = useState<Address>();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [jettonData, setJettonData] = useState<{
+    name: String | undefined;
+    symbol: String | undefined;
+    description: String | undefined;
+    image: String | undefined;
+  }>();
 
   const masterContract = useAsyncInitialize(async () => {
     if (!client) return;
@@ -20,10 +54,14 @@ export function useMasterWallet() {
 
     const res = client.open(contract) as OpenedContract<MasterWallet>;
 
+    const jd = await res.getJettonData();
+
+    const jettonData = parseJettonData(jd.content.asSlice());
+    setJettonData(jettonData);
+
     if (sender.address) {
       const jettonAddress = await res.getJettonWalletAddress(sender.address);
 
-      // setLastFundAddress(fundAddress);
       setJettonWalletAddress(jettonAddress);
     }
 
@@ -47,5 +85,6 @@ export function useMasterWallet() {
     getJettonWalletAddress: (owner: Address) =>
       masterContract?.getJettonWalletAddress(owner),
     isInitialized: isInitialized,
+    jettonData: jettonData,
   };
 }
