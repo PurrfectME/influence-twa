@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import JettonsWallet from "../../components/JettonsWallet";
 import Fund from "../../components/Fund";
 import {
+  Avatar,
   Box,
   Card,
   CardMedia,
@@ -67,49 +68,49 @@ export default function Home() {
   }, [addresses]);
 
   return (
-    <FlexBoxCol>
-      <FlexBoxRow>
-        {/* TODO: open connect modal manually
+    <Grid container>
+      {/* TODO: open connect modal manually
             TODO: https://github.com/ton-connect/sdk/tree/main/packages/ui#call-connect */}
-        <TonConnectButton />
-        <Button>
-          {network
-            ? network === CHAIN.MAINNET
-              ? "mainnet"
-              : "testnet"
-            : "N/A"}
-        </Button>
-        {connected ? (
-          <>
+      <Grid container display={"flex"} flexDirection={"row"}>
+        <Grid item mr={"10px"}>
+          <TonConnectButton />
+        </Grid>
+        <Grid item mr={"20px"}>
+          <Button>
+            {network
+              ? network === CHAIN.MAINNET
+                ? "mainnet"
+                : "testnet"
+              : "N/A"}
+          </Button>
+        </Grid>
+        <Grid item>
+          {connected ? (
             <Grid
               container
               display={"flex"}
-              justifyContent={"center"}
               flexDirection={"row"}
+              alignItems={"center"}
             >
-              <Grid container display={"flex"} flexDirection={"row"}>
-                <Grid item>
-                  {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
-                </Grid>
+              <Grid item mr={"20px"}>
+                {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
               </Grid>
-              <Grid container display={"flex"} flexDirection={"row"}>
-                <Grid item>
-                  {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
-                </Grid>
-                <Grid width={"30px"} height={"30px"} item borderRadius={"10px"}>
-                  <img
-                    width={"30px"}
-                    height={"30px"}
-                    src={jettonData ? `${jettonData.image}` : ""}
-                  />
+              <Grid item>
+                <Grid container alignItems={"center"}>
+                  <Grid item>
+                    {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
+                  </Grid>
+                  <Grid>
+                    <Avatar src={jettonData ? `${jettonData.image}` : ""} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </>
-        ) : (
-          <div>not connected</div>
-        )}
-      </FlexBoxRow>
+          ) : (
+            <div>not connected</div>
+          )}
+        </Grid>
+      </Grid>
       <FlexBoxRow>
         <Button onClick={createFund}>Создать фонд</Button>
         <Button onClick={() => navigate("/influence-twa/requests")}>
@@ -129,7 +130,7 @@ export default function Home() {
           ))}
         </Grid>
       </Grid>
-    </FlexBoxCol>
+    </Grid>
   );
 }
 
