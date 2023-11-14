@@ -67,6 +67,8 @@ export default function Home() {
     }
   }, [addresses]);
 
+  console.log("JET", jettonWallet?.balance);
+
   return (
     <Grid container>
       {/* TODO: open connect modal manually

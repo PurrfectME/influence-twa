@@ -29,8 +29,9 @@ import { ConnectWalletDialog } from "./ConnectWalletDialog";
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
   const { sender, connected } = useTonConnect();
-  const { data: itemJettonWallet } = useJettonWallet(address);
-  const { data: userJettonWallet } = useJettonWallet(sender.address);
+  const { data: itemJettonWallet, isLiked } = useJettonWallet(address, true);
+  const { data: userJettonWallet, address: jettonSenderwalletAddress } =
+    useJettonWallet(sender.address);
 
   const { sendDonate } = useJettonWallet(sender.address!);
   const [tonConnectUI] = useTonConnectUI();
@@ -42,6 +43,10 @@ export function FundItem({ address }: any) {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
+
+  const alreadyHelped =
+    isLiked(jettonSenderwalletAddress?.toString()) ||
+    userJettonWallet === undefined;
 
   return (
     <>
@@ -59,18 +64,23 @@ export function FundItem({ address }: any) {
               </Grid>
             </Grid>
             <Grid container>
-              <Grid container direction="row" justifyContent={"space-between"}>
+              <Grid
+                container
+                direction="column"
+                justifyContent={"space-between"}
+              >
                 <Grid item>
                   <Typography style={{ fontSize: "10px" }}>
                     Собрано:{" "}
                     {itemJettonWallet
                       ? `${fromNano(itemJettonWallet?.balance)} INF`
-                      : ""}
+                      : "0 INF"}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography style={{ fontSize: "10px" }}>
-                    Нужно: {data ? `${fromNano(data?.amountToHelp)} INF` : ""}
+                    Нужно:{" "}
+                    {data ? `${fromNano(data?.amountToHelp)} INF` : "0 INF"}
                   </Typography>
                 </Grid>
               </Grid>
@@ -81,7 +91,12 @@ export function FundItem({ address }: any) {
         <Grid container justifyContent={"center"} mt={"10px"}>
           <Grid item>
             <Button
-              style={{ backgroundColor: "var(--tg-theme-button-color)" }}
+              disabled={alreadyHelped}
+              style={{
+                backgroundColor: alreadyHelped
+                  ? "green"
+                  : "var(--tg-theme-button-color)",
+              }}
               size="small"
               variant="contained"
               onClick={() => {
@@ -91,17 +106,26 @@ export function FundItem({ address }: any) {
                   return;
                 }
 
-                console.log("BALANCE", userJettonWallet?.balance);
-
                 if (userJettonWallet?.balance == BigInt(0)) {
                   handleOpen("You don't have any INF tokens. Buy some");
                   return;
                 }
 
-                sendDonate(address as Address, toNano("0.5"));
+                //10% from total user's jetton balance
+                sendDonate(
+                  address as Address,
+                  userJettonWallet!.balance / BigInt(10)
+                );
               }}
             >
-              <Typography style={{ fontSize: "10px" }}>Donate!</Typography>
+              <Typography
+                style={{
+                  fontSize: "10px",
+                  color: alreadyHelped ? "white" : "black",
+                }}
+              >
+                {alreadyHelped ? "U helped!" : "LIKE!"}
+              </Typography>
             </Button>
           </Grid>
         </Grid>

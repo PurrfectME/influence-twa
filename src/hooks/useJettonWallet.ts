@@ -1,4 +1,4 @@
-import { Address, OpenedContract } from "ton-core";
+import { Address, OpenedContract, Transaction } from "ton-core";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useTonConnect } from "./useTonConnect";
@@ -7,13 +7,16 @@ import InfluenceJettonWallet from "../contracts/jettonWallet";
 import { useEffect, useState } from "react";
 import JettonWalletData from "../models/JettonWalletData";
 
-export default function useJettonWallet(owner: Address | undefined) {
+export default function useJettonWallet(
+  owner: Address | undefined,
+  needTrxs?: boolean
+) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const { getJettonWalletAddress, isInitialized: isMasterInitialized } =
     useMasterWallet();
   const [walletData, setWalletData] = useState<JettonWalletData>();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [trxs, setTrxs] = useState<Transaction[]>();
 
   const jettonWalletContract = useAsyncInitialize(async () => {
     if (!client || !isMasterInitialized || !owner) return;
@@ -25,31 +28,35 @@ export default function useJettonWallet(owner: Address | undefined) {
     const res = client.open(contract) as OpenedContract<InfluenceJettonWallet>;
 
     const data = await res.getWalletData();
-
     setWalletData(data);
+
+    if (needTrxs) {
+      const tranxs = await client.getTransactions(jettonWalletAddress!, {
+        limit: 20,
+      });
+      setTrxs(tranxs);
+    }
 
     return res;
   }, [client, isMasterInitialized]);
 
-  // useEffect(() => {
-  //   if (!jettonWalletContract) return;
+  const isLiked = (senderJettonWalletAddress: String | undefined) => {
+    if (trxs) {
+      return trxs.some((x) => {
+        const trxSender = x.inMessage?.info.src?.toString();
+        if (trxSender && trxSender === senderJettonWalletAddress) {
+          return true;
+        }
+      });
+    }
 
-  //   setIsInitialized(true);
-
-  //   async function getWalletData() {
-  //     if (!jettonWalletContract) return;
-
-  //     const res = await jettonWalletContract.getWalletData();
-
-  //     setWalletData(res);
-  //   }
-
-  //   getWalletData();
-  // }, [jettonWalletContract]);
+    return false;
+  };
 
   return {
     data: walletData,
-    isInitialized,
+    address: jettonWalletContract?.address,
+    isLiked,
     sendDonate: (destination: Address, amount: bigint) =>
       jettonWalletContract?.sendDonate(sender, destination, amount),
   };

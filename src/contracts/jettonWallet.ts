@@ -18,8 +18,6 @@ export default class InfluenceJettonWallet implements Contract {
     const master = stack.readAddress();
     const walletCode = stack.readCell().asSlice().loadRef();
 
-    console.log("GAG", balance);
-
     return { balance, owner, master, walletCode };
   }
 
@@ -30,8 +28,6 @@ export default class InfluenceJettonWallet implements Contract {
     destination: Address,
     amount: bigint
   ) {
-    console.log("DEST", destination.toString());
-
     const body = beginCell()
       //TOKEN TRANSFER MESSAGE
       .storeUint(260734629, 32)
