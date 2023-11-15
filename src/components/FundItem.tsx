@@ -39,6 +39,24 @@ export function FundItem({ address }: any) {
 
   return (
     <>
+      {/* <Grid container>
+        <h2>Available</h2>
+        {itemJettonWallet && (liked === undefined || !liked) ? (
+          fromNano(itemJettonWallet.balance)
+        ) : (
+          <></>
+        )}
+      </Grid>
+
+      <Grid container>
+        <h2>Liked</h2>
+        {itemJettonWallet && (liked !== undefined || liked) ? (
+          fromNano(itemJettonWallet.balance)
+        ) : (
+          <></>
+        )}
+      </Grid> */}
+
       <FundItemBox>
         <Grid container onClick={() => {}}>
           <ImageBox />
@@ -87,44 +105,13 @@ export function FundItem({ address }: any) {
               },
             }}
           >
-            {/* <Button
-              style={{
-                backgroundColor: "var(--tg-theme-button-color)",
-              }}
-              size="small"
-              variant="contained"
-              onClick={() => {
-                if (!connected) {
-                  //show modal
-                  handleOpen("To donate you have to connect your ton wallet!");
-                  return;
-                }
-
-                if (userJettonWallet?.balance == BigInt(0)) {
-                  handleOpen("You don't have any INF tokens. Buy some");
-                  return;
-                }
-
-                //TODO: if 10% is > than needed than calculate only needed amount
-                //10% from total user's jetton balance
-                sendDonate(
-                  address as Address,
-                  userJettonWallet!.balance / BigInt(10)
-                );
-              }}
-            >
-              <Typography color="white" fontSize="10px">
-                Like
-              </Typography>
-            </Button> */}
             {connected ? (
               liked !== undefined && data ? (
                 <Button
-                  disabled={liked}
+                  disabled={liked && data ? true : false}
                   style={{
-                    backgroundColor: liked
-                      ? "green"
-                      : "var(--tg-theme-button-color)",
+                    backgroundColor:
+                      liked && data ? "green" : "var(--tg-theme-button-color)",
                   }}
                   size="small"
                   variant="contained"

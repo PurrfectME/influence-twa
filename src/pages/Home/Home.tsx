@@ -9,54 +9,26 @@ import "@twa-dev/sdk";
 import { Address, fromNano } from "ton-core";
 import { useMasterWallet } from "../../hooks/useMasterWallet";
 import { useNavigate } from "react-router-dom";
-import JettonsWallet from "../../components/JettonsWallet";
-import Fund from "../../components/Fund";
-import {
-  Avatar,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Container,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Avatar, CircularProgress, Grid, Paper } from "@mui/material";
 import { useFundContract } from "../../hooks/useFundContract";
 import { useEffect, useState } from "react";
-import { FundItem } from "../../components/FundItem";
 import { useTonClient } from "../../hooks/useTonClient";
 import useJettonWallet from "../../hooks/useJettonWallet";
+import Items from "../../components/Items";
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
-  const { network, sender, connected } = useTonConnect();
+  const { sender, connected } = useTonConnect();
   const wallet = useTonWallet();
   const { client } = useTonClient();
   const navigate = useNavigate();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  const { addresses } = useFundContract();
-
-  const [dict, setDict] = useState<Address[]>();
+  const { likedData, availableData, addresses } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
 
-  const { data: jettonWallet } = useJettonWallet(sender.address);
+  const { data: jettonWallet, sendDonate } = useJettonWallet(sender.address);
 
   useEffect(() => {
-    if (addresses) {
-      let arr: Address[] = [];
-
-      //index starts from 1 because seqno of contract start from 1;
-      for (let index = 1; index <= addresses.size; index++) {
-        const address = addresses.get(BigInt(index));
-        if (address) {
-          arr.push(address);
-        }
-      }
-
-      setDict(arr);
-    }
-
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
       const tonBalance = await client!.getBalance(address);
@@ -67,7 +39,7 @@ export default function Home() {
     if (client && wallet) {
       getBalances();
     }
-  }, [addresses]);
+  }, [client, wallet]);
 
   return (
     <Grid container flexDirection={"column"}>
@@ -121,24 +93,25 @@ export default function Home() {
         <TransferTon mintTokens={mintTokens} />
         {/* <JettonsWallet owner={sender.address} /> */}
         {/* <Fund /> */}
-        {dict ? (
-          <Grid
-            spacing={"3px"}
-            container
-            justifyContent={"start"}
-            wrap="wrap"
-            mt={"20px"}
-          >
-            {/* <ItemsContainer addresses={dict} /> */}
-            {dict.map((x, i) => (
-              <Grid key={i} item>
-                <FundItem address={x} />
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <></>
-        )}
+        <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
+          {addresses && likedData && availableData && jettonWallet ? (
+            <Items
+              sendDonate={sendDonate}
+              senderJettonWalletBalance={jettonWallet.balance}
+              likedData={likedData ? likedData : []}
+              availableData={availableData ? availableData : []}
+            />
+          ) : (
+            <Grid
+              container
+              display={"flex"}
+              justifyContent={"center"}
+              mt={"10vh"}
+            >
+              <CircularProgress />
+            </Grid>
+          )}
+        </Grid>
       </>
     </Grid>
   );
