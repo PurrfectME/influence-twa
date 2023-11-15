@@ -7,10 +7,7 @@ import InfluenceJettonWallet from "../contracts/jettonWallet";
 import { useEffect, useState } from "react";
 import JettonWalletData from "../models/JettonWalletData";
 
-export default function useJettonWallet(
-  owner: Address | undefined,
-  needTrxs?: boolean
-) {
+export default function useJettonWallet(owner: Address | undefined) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const { getJettonWalletAddress, isInitialized: isMasterInitialized } =
@@ -29,14 +26,6 @@ export default function useJettonWallet(
 
     const data = await res.getWalletData();
     setWalletData(data);
-
-    if (needTrxs) {
-      const tranxs = await client.getTransactions(jettonWalletAddress!, {
-        //TODO: enlardge limit
-        limit: 20,
-      });
-      setTrxs(tranxs);
-    }
 
     return res;
   }, [client, isMasterInitialized]);

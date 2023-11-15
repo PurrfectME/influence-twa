@@ -13,37 +13,34 @@ export function useFundItemContract(itemAddress: Address) {
   const { sender } = useTonConnect();
   const [data, setData] = useState<FundItemData>();
   const [liked, setLiked] = useState<boolean>();
-
-  const {
-    data: itemJettonWallet,
-    isLiked,
-    address: itemJettonAddress,
-  } = useJettonWallet(itemAddress, true);
+  const { data: itemJettonWallet, address: itemJettonAddress } =
+    useJettonWallet(itemAddress);
   const { address: jettonSenderwalletAddress } = useJettonWallet(
     sender.address
   );
 
   const fundItemContract = useAsyncInitialize(async () => {
-    if (!client || !itemJettonAddress) return;
+    if (!client || !itemJettonAddress || !jettonSenderwalletAddress) return;
     const contract = new FundItemContract(itemAddress);
 
     const tranxs = await client.getTransactions(itemJettonAddress, {
       //TODO: enlardge limit
       limit: 20,
     });
-    setTrxs(tranxs);
 
-    // if (
-    //   jettonSenderwalletAddress &&
-    //   isLiked(jettonSenderwalletAddress.toString())
-    // ) {
-    //   console.log("HERE");
+    if (tranxs) {
+      tranxs.some((x) => {
+        const trxSender = x.inMessage?.info.src?.toString();
+        if (trxSender && trxSender === jettonSenderwalletAddress.toString()) {
+          console.log("HERE");
 
-    //   setLiked(true);
-    // }
+          setLiked(true);
+        }
+      });
+    }
 
     return client.open(contract) as OpenedContract<FundItemContract>;
-  }, [client, itemJettonAddress]);
+  }, [client, itemJettonAddress, jettonSenderwalletAddress]);
 
   useEffect(() => {
     async function getData() {

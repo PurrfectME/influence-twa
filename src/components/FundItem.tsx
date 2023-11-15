@@ -9,13 +9,12 @@ import { ConnectedWallet, useTonConnectUI } from "@tonconnect/ui-react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
 
 export function FundItem({ address }: any) {
-  const { data } = useFundItemContract(address);
+  const { data, liked, itemJettonWallet } = useFundItemContract(address);
   const { sender, connected } = useTonConnect();
-  const { data: userJettonWallet, address: jettonSenderwalletAddress } =
-    useJettonWallet(sender.address);
-  const { data: itemJettonWallet, isLiked } = useJettonWallet(address, true);
+  const { data: userJettonWallet, sendDonate } = useJettonWallet(
+    sender.address
+  );
 
-  const { sendDonate } = useJettonWallet(sender.address!);
   const [tonConnectUI] = useTonConnectUI();
   const [dialogMessage, setDialogMessage] = useState<String>();
 
@@ -25,9 +24,6 @@ export function FundItem({ address }: any) {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-
-  const alreadyHelped = () =>
-    jettonSenderwalletAddress && isLiked(jettonSenderwalletAddress.toString());
 
   return (
     <>
@@ -79,12 +75,14 @@ export function FundItem({ address }: any) {
               },
             }}
           >
-            {userJettonWallet ? (
-              alreadyHelped() ? (
+            {connected ? (
+              data && liked !== undefined ? (
                 <Button
-                  disabled={true}
+                  disabled={liked}
                   style={{
-                    backgroundColor: "green",
+                    backgroundColor: liked
+                      ? "green"
+                      : "var(--tg-theme-button-color)",
                   }}
                   size="small"
                   variant="contained"
@@ -111,46 +109,45 @@ export function FundItem({ address }: any) {
                   }}
                 >
                   <Typography color="white" fontSize="10px">
-                    U helped!
+                    {liked ? "U helped!" : "Like"}
                   </Typography>
                 </Button>
               ) : (
-                <Button
-                  disabled={false}
-                  style={{
-                    backgroundColor: "var(--tg-theme-button-color)",
-                  }}
-                  size="small"
-                  variant="contained"
-                  onClick={() => {
-                    if (!connected) {
-                      //show modal
-                      handleOpen(
-                        "To donate you have to connect your ton wallet!"
-                      );
-                      return;
-                    }
-
-                    if (userJettonWallet?.balance == BigInt(0)) {
-                      handleOpen("You don't have any INF tokens. Buy some");
-                      return;
-                    }
-
-                    //TODO: if 10% is > than needed than calculate only needed amount
-                    //10% from total user's jetton balance
-                    sendDonate(
-                      address as Address,
-                      userJettonWallet!.balance / BigInt(10)
-                    );
-                  }}
-                >
-                  <Typography color="black" fontSize="10px">
-                    LIKE!
-                  </Typography>
-                </Button>
+                <CircularProgress />
               )
             ) : (
-              <CircularProgress />
+              <Button
+                style={{
+                  backgroundColor: "var(--tg-theme-button-color)",
+                }}
+                size="small"
+                variant="contained"
+                onClick={() => {
+                  if (!connected) {
+                    //show modal
+                    handleOpen(
+                      "To donate you have to connect your ton wallet!"
+                    );
+                    return;
+                  }
+
+                  if (userJettonWallet?.balance == BigInt(0)) {
+                    handleOpen("You don't have any INF tokens. Buy some");
+                    return;
+                  }
+
+                  //TODO: if 10% is > than needed than calculate only needed amount
+                  //10% from total user's jetton balance
+                  sendDonate(
+                    address as Address,
+                    userJettonWallet!.balance / BigInt(10)
+                  );
+                }}
+              >
+                <Typography color="white" fontSize="10px">
+                  Like
+                </Typography>
+              </Button>
             )}
           </Grid>
         </Grid>
