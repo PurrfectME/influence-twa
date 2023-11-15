@@ -27,7 +27,6 @@ import { useEffect, useState } from "react";
 import { FundItem } from "../../components/FundItem";
 import { useTonClient } from "../../hooks/useTonClient";
 import useJettonWallet from "../../hooks/useJettonWallet";
-import ItemsContainer from "../../components/ItemsContainer";
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
