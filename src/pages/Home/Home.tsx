@@ -16,6 +16,7 @@ import {
   Box,
   Card,
   CardMedia,
+  CircularProgress,
   Container,
   Grid,
   Typography,
@@ -25,6 +26,7 @@ import { useEffect, useState } from "react";
 import { FundItem } from "../../components/FundItem";
 import { useTonClient } from "../../hooks/useTonClient";
 import useJettonWallet from "../../hooks/useJettonWallet";
+import ItemsContainer from "../../components/ItemsContainer";
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
@@ -67,71 +69,69 @@ export default function Home() {
     }
   }, [addresses]);
 
-  console.log("JET", jettonWallet?.balance);
-
   return (
-    <Grid container>
+    <Grid container flexDirection={"column"}>
       {/* TODO: open connect modal manually
             TODO: https://github.com/ton-connect/sdk/tree/main/packages/ui#call-connect */}
-      <Grid container display={"flex"} flexDirection={"row"}>
-        <Grid item mr={"10px"}>
+      <>
+        <Grid container display={"flex"} flexDirection={"row"}>
           <TonConnectButton />
-        </Grid>
-        <Grid item mr={"20px"}>
-          <Button>
-            {network
-              ? network === CHAIN.MAINNET
-                ? "mainnet"
-                : "testnet"
-              : "N/A"}
-          </Button>
-        </Grid>
-        <Grid item>
+
           {connected ? (
-            <Grid
-              container
-              display={"flex"}
-              flexDirection={"row"}
-              alignItems={"center"}
-            >
-              <Grid item mr={"20px"}>
-                {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
-              </Grid>
-              <Grid item>
-                <Grid container alignItems={"center"}>
-                  <Grid item>
-                    {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
-                  </Grid>
-                  <Grid>
-                    <Avatar src={jettonData ? `${jettonData.image}` : ""} />
+            <Grid item>
+              <Grid
+                container
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                <Grid item mr={"20px"}>
+                  {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
+                </Grid>
+                <Grid item>
+                  <Grid container alignItems={"center"}>
+                    <Grid item>
+                      {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
+                    </Grid>
+                    <Grid>
+                      <Avatar src={jettonData ? `${jettonData.image}` : ""} />
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
           ) : (
-            <div>not connected</div>
+            <div>Connect wallet to see actual balances</div>
           )}
         </Grid>
-      </Grid>
-      <FlexBoxRow>
-        <Button onClick={createFund}>Создать фонд</Button>
-        <Button onClick={() => navigate("/influence-twa/requests")}>
-          Заявки
-        </Button>
-      </FlexBoxRow>
-      <TransferTon mintTokens={mintTokens} />
-      {/* <JettonsWallet owner={sender.address} /> */}
-      {/* <Fund /> */}
-
-      <Grid container justifyContent={"center"} mt={"20px"}>
-        <Grid spacing={"3px"} container justifyContent={"center"} wrap="wrap">
-          {dict?.map((x, i) => (
-            <Grid key={i} item>
-              <FundItem address={x} />
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
+        <FlexBoxRow>
+          <Button onClick={createFund}>Создать фонд</Button>
+          <Button onClick={() => navigate("/influence-twa/requests")}>
+            Заявки
+          </Button>
+        </FlexBoxRow>
+        <TransferTon mintTokens={mintTokens} />
+        {/* <JettonsWallet owner={sender.address} /> */}
+        {/* <Fund /> */}
+        {dict ? (
+          <Grid
+            spacing={"3px"}
+            container
+            justifyContent={"start"}
+            wrap="wrap"
+            mt={"20px"}
+          >
+            {/* <ItemsContainer addresses={dict} /> */}
+            {dict.map((x, i) => (
+              <Grid key={i} item>
+                <FundItem address={x} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <></>
+        )}
+      </>
     </Grid>
   );
 }

@@ -7,15 +7,17 @@ import FundContract from "../contracts/fund";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import FundData from "../models/FundData";
+import FundItemData from "../models/FundItemData";
 
 export function useFundContract() {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
-  // const { isInitialized } = useMasterWallet();
   const [addresses, setAddresses] = useState<
     Dictionary<bigint, Address> | undefined
   >();
   const [fundData, setFundData] = useState<FundData>();
+  const [likedItems, setLikedItems] = useState<FundItemData[]>();
+  const [availableItems, setAvailableItems] = useState<FundItemData[]>();
 
   const fundContract = useAsyncInitialize(async () => {
     if (!client) return;

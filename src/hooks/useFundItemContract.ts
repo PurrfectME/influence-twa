@@ -6,17 +6,44 @@ import { useEffect, useState } from "react";
 import FundItemData from "../models/FundItemData";
 import { useTonConnect } from "./useTonConnect";
 import { useMasterWallet } from "./useMasterWallet";
+import useJettonWallet from "./useJettonWallet";
 
 export function useFundItemContract(itemAddress: Address) {
   const { client } = useTonClient();
+  const { sender } = useTonConnect();
   const [data, setData] = useState<FundItemData>();
+  const [liked, setLiked] = useState<boolean>();
+
+  const {
+    data: itemJettonWallet,
+    isLiked,
+    address: itemJettonAddress,
+  } = useJettonWallet(itemAddress, true);
+  const { address: jettonSenderwalletAddress } = useJettonWallet(
+    sender.address
+  );
 
   const fundItemContract = useAsyncInitialize(async () => {
-    if (!client) return;
+    if (!client || !itemJettonAddress) return;
     const contract = new FundItemContract(itemAddress);
 
+    const tranxs = await client.getTransactions(itemJettonAddress, {
+      //TODO: enlardge limit
+      limit: 20,
+    });
+    setTrxs(tranxs);
+
+    // if (
+    //   jettonSenderwalletAddress &&
+    //   isLiked(jettonSenderwalletAddress.toString())
+    // ) {
+    //   console.log("HERE");
+
+    //   setLiked(true);
+    // }
+
     return client.open(contract) as OpenedContract<FundItemContract>;
-  }, [client]);
+  }, [client, itemJettonAddress]);
 
   useEffect(() => {
     async function getData() {
@@ -30,5 +57,7 @@ export function useFundItemContract(itemAddress: Address) {
 
   return {
     data: data,
+    liked,
+    itemJettonWallet,
   };
 }

@@ -32,6 +32,7 @@ export default function useJettonWallet(
 
     if (needTrxs) {
       const tranxs = await client.getTransactions(jettonWalletAddress!, {
+        //TODO: enlardge limit
         limit: 20,
       });
       setTrxs(tranxs);
@@ -41,7 +42,7 @@ export default function useJettonWallet(
   }, [client, isMasterInitialized]);
 
   const isLiked = (senderJettonWalletAddress: String | undefined) => {
-    if (trxs) {
+    if (trxs && senderJettonWalletAddress) {
       return trxs.some((x) => {
         const trxSender = x.inMessage?.info.src?.toString();
         if (trxSender && trxSender === senderJettonWalletAddress) {

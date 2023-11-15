@@ -1,37 +1,19 @@
 import { Address, fromNano, toNano } from "ton-core";
 import { useFundItemContract } from "../hooks/useFundItemContract";
-import { FlexBoxCol, FundItemBox, ImageBox, Spacer } from "./styled/styled";
-import ProgressBar from "@ramonak/react-progress-bar";
-import {
-  Alert,
-  Box,
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Modal,
-  Slide,
-  Typography,
-} from "@mui/material";
+import { FundItemBox, ImageBox } from "./styled/styled";
+import { Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import useJettonWallet from "../hooks/useJettonWallet";
-import { useMasterWallet } from "../hooks/useMasterWallet";
 import { useTonConnect } from "../hooks/useTonConnect";
-import React from "react";
-import { TransitionProps } from "@mui/material/transitions";
 import { ConnectedWallet, useTonConnectUI } from "@tonconnect/ui-react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
 
 export function FundItem({ address }: any) {
   const { data } = useFundItemContract(address);
   const { sender, connected } = useTonConnect();
-  const { data: itemJettonWallet, isLiked } = useJettonWallet(address, true);
   const { data: userJettonWallet, address: jettonSenderwalletAddress } =
     useJettonWallet(sender.address);
+  const { data: itemJettonWallet, isLiked } = useJettonWallet(address, true);
 
   const { sendDonate } = useJettonWallet(sender.address!);
   const [tonConnectUI] = useTonConnectUI();
@@ -44,9 +26,8 @@ export function FundItem({ address }: any) {
   };
   const handleClose = () => setOpen(false);
 
-  const alreadyHelped =
-    isLiked(jettonSenderwalletAddress?.toString()) ||
-    userJettonWallet === undefined;
+  const alreadyHelped = () =>
+    jettonSenderwalletAddress && isLiked(jettonSenderwalletAddress.toString());
 
   return (
     <>
@@ -89,44 +70,88 @@ export function FundItem({ address }: any) {
         </Grid>
 
         <Grid container justifyContent={"center"} mt={"10px"}>
-          <Grid item>
-            <Button
-              disabled={alreadyHelped}
-              style={{
-                backgroundColor: alreadyHelped
-                  ? "green"
-                  : "var(--tg-theme-button-color)",
-              }}
-              size="small"
-              variant="contained"
-              onClick={() => {
-                if (!connected) {
-                  //show modal
-                  handleOpen("To donate you have to connect your ton wallet!");
-                  return;
-                }
+          <Grid
+            item
+            sx={{
+              "& span": {
+                width: "20px !important",
+                height: "20px !important",
+              },
+            }}
+          >
+            {userJettonWallet ? (
+              alreadyHelped() ? (
+                <Button
+                  disabled={true}
+                  style={{
+                    backgroundColor: "green",
+                  }}
+                  size="small"
+                  variant="contained"
+                  onClick={() => {
+                    if (!connected) {
+                      //show modal
+                      handleOpen(
+                        "To donate you have to connect your ton wallet!"
+                      );
+                      return;
+                    }
 
-                if (userJettonWallet?.balance == BigInt(0)) {
-                  handleOpen("You don't have any INF tokens. Buy some");
-                  return;
-                }
+                    if (userJettonWallet?.balance == BigInt(0)) {
+                      handleOpen("You don't have any INF tokens. Buy some");
+                      return;
+                    }
 
-                //10% from total user's jetton balance
-                sendDonate(
-                  address as Address,
-                  userJettonWallet!.balance / BigInt(10)
-                );
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "10px",
-                  color: alreadyHelped ? "white" : "black",
-                }}
-              >
-                {alreadyHelped ? "U helped!" : "LIKE!"}
-              </Typography>
-            </Button>
+                    //TODO: if 10% is > than needed than calculate only needed amount
+                    //10% from total user's jetton balance
+                    sendDonate(
+                      address as Address,
+                      userJettonWallet!.balance / BigInt(10)
+                    );
+                  }}
+                >
+                  <Typography color="white" fontSize="10px">
+                    U helped!
+                  </Typography>
+                </Button>
+              ) : (
+                <Button
+                  disabled={false}
+                  style={{
+                    backgroundColor: "var(--tg-theme-button-color)",
+                  }}
+                  size="small"
+                  variant="contained"
+                  onClick={() => {
+                    if (!connected) {
+                      //show modal
+                      handleOpen(
+                        "To donate you have to connect your ton wallet!"
+                      );
+                      return;
+                    }
+
+                    if (userJettonWallet?.balance == BigInt(0)) {
+                      handleOpen("You don't have any INF tokens. Buy some");
+                      return;
+                    }
+
+                    //TODO: if 10% is > than needed than calculate only needed amount
+                    //10% from total user's jetton balance
+                    sendDonate(
+                      address as Address,
+                      userJettonWallet!.balance / BigInt(10)
+                    );
+                  }}
+                >
+                  <Typography color="black" fontSize="10px">
+                    LIKE!
+                  </Typography>
+                </Button>
+              )
+            ) : (
+              <CircularProgress />
+            )}
           </Grid>
         </Grid>
       </FundItemBox>
