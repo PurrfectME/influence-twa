@@ -10,17 +10,11 @@ import {
 import FundData from "../models/FundData";
 
 export default class FundContract implements Contract {
-  async getFundItems(provider: ContractProvider) {
-    const { stack } = await provider.get("ownerFund", []);
-
-    return stack.readAddress().toString();
-  }
-
   async getFundData(provider: ContractProvider): Promise<FundData> {
     const { stack } = await provider.get("fund_data", []);
 
     const name = stack.readString();
-    const description = stack.readCell().asSlice().loadStringTail();
+    const description = stack.readString();
     const jettonBalance = stack.readBigNumber();
     const fundBalance = stack.readBigNumber();
     const image = stack.readString();
@@ -51,13 +45,13 @@ export default class FundContract implements Contract {
 
   async getAllItemsAddresses(
     provider: ContractProvider
-  ): Promise<Dictionary<bigint, Address>> {
-    const { stack } = await provider.get("getAllItemsAddresses", []);
-
+  ): Promise<Dictionary<bigint, Address> | undefined> {
+    const { stack } = await provider.get("allItemsAddresses", []);
     //TODO: сколько битов 257-битный инт займёт))0)
     const res = stack
       .readCell()
       .asSlice()
+
       .loadDictDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
 
     return res;

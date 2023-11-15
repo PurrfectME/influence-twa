@@ -8,39 +8,43 @@ import { useTonConnect } from "./useTonConnect";
 import { useMasterWallet } from "./useMasterWallet";
 import useJettonWallet from "./useJettonWallet";
 
-export function useFundItemContract(itemAddress: Address) {
+export function useFundItemContract(
+  itemAddress: Address,
+  jettonSenderwalletAddress: Address | undefined,
+  itemJettonAddress: Address | undefined
+) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const [data, setData] = useState<FundItemData>();
-  const [liked, setLiked] = useState<boolean>();
-  const { data: itemJettonWallet, address: itemJettonAddress } =
-    useJettonWallet(itemAddress);
-  const { address: jettonSenderwalletAddress } = useJettonWallet(
-    sender.address
-  );
+  const [liked, setLiked] = useState<boolean>(false);
+
+  // const { address: jettonSenderwalletAddress } = useJettonWallet(
+  //   sender.address
+  // );
 
   const fundItemContract = useAsyncInitialize(async () => {
-    if (!client || !itemJettonAddress || !jettonSenderwalletAddress) return;
+    if (!client || !jettonSenderwalletAddress) return;
     const contract = new FundItemContract(itemAddress);
 
-    const tranxs = await client.getTransactions(itemJettonAddress, {
-      //TODO: enlardge limit
-      limit: 20,
-    });
-
-    if (tranxs) {
-      tranxs.some((x) => {
-        const trxSender = x.inMessage?.info.src?.toString();
-        if (trxSender && trxSender === jettonSenderwalletAddress.toString()) {
-          console.log("HERE");
-
-          setLiked(true);
-        }
+    //У свежей созданной заявки ещё нет жеттон кошелька!!!!
+    if (itemJettonAddress) {
+      const tranxs = await client.getTransactions(itemJettonAddress, {
+        //TODO: enlardge limit
+        limit: 20,
       });
+
+      if (tranxs) {
+        tranxs.some((x) => {
+          const trxSender = x.inMessage?.info.src?.toString();
+          if (trxSender && trxSender === jettonSenderwalletAddress.toString()) {
+            setLiked(true);
+          }
+        });
+      }
     }
 
     return client.open(contract) as OpenedContract<FundItemContract>;
-  }, [client, itemJettonAddress, jettonSenderwalletAddress]);
+  }, [client, jettonSenderwalletAddress, itemJettonAddress]);
 
   useEffect(() => {
     async function getData() {
@@ -55,6 +59,5 @@ export function useFundItemContract(itemAddress: Address) {
   return {
     data: data,
     liked,
-    itemJettonWallet,
   };
 }

@@ -9,10 +9,20 @@ import { ConnectedWallet, useTonConnectUI } from "@tonconnect/ui-react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
 
 export function FundItem({ address }: any) {
-  const { data, liked, itemJettonWallet } = useFundItemContract(address);
   const { sender, connected } = useTonConnect();
-  const { data: userJettonWallet, sendDonate } = useJettonWallet(
-    sender.address
+  const {
+    data: userJettonWallet,
+    sendDonate,
+    address: jettonSenderwalletAddress,
+  } = useJettonWallet(sender.address);
+
+  const { data: itemJettonWallet, address: itemJettonAddress } =
+    useJettonWallet(address);
+
+  const { data, liked } = useFundItemContract(
+    address,
+    jettonSenderwalletAddress,
+    itemJettonAddress
   );
 
   const [tonConnectUI] = useTonConnectUI();
@@ -24,6 +34,8 @@ export function FundItem({ address }: any) {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
+
+  console.log("LIKED", liked);
 
   return (
     <>
@@ -50,14 +62,14 @@ export function FundItem({ address }: any) {
                   <Typography style={{ fontSize: "10px" }}>
                     Собрано:{" "}
                     {itemJettonWallet
-                      ? `${fromNano(itemJettonWallet?.balance)} INF`
+                      ? `${fromNano(itemJettonWallet.balance)} INF`
                       : "0 INF"}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography style={{ fontSize: "10px" }}>
                     Нужно:{" "}
-                    {data ? `${fromNano(data?.amountToHelp)} INF` : "0 INF"}
+                    {data ? `${fromNano(data.amountToHelp)} INF` : "0 INF"}
                   </Typography>
                 </Grid>
               </Grid>
@@ -75,8 +87,38 @@ export function FundItem({ address }: any) {
               },
             }}
           >
+            {/* <Button
+              style={{
+                backgroundColor: "var(--tg-theme-button-color)",
+              }}
+              size="small"
+              variant="contained"
+              onClick={() => {
+                if (!connected) {
+                  //show modal
+                  handleOpen("To donate you have to connect your ton wallet!");
+                  return;
+                }
+
+                if (userJettonWallet?.balance == BigInt(0)) {
+                  handleOpen("You don't have any INF tokens. Buy some");
+                  return;
+                }
+
+                //TODO: if 10% is > than needed than calculate only needed amount
+                //10% from total user's jetton balance
+                sendDonate(
+                  address as Address,
+                  userJettonWallet!.balance / BigInt(10)
+                );
+              }}
+            >
+              <Typography color="white" fontSize="10px">
+                Like
+              </Typography>
+            </Button> */}
             {connected ? (
-              data && liked !== undefined ? (
+              liked !== undefined && data ? (
                 <Button
                   disabled={liked}
                   style={{

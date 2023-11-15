@@ -7,7 +7,6 @@ import FundContract from "../contracts/fund";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import FundData from "../models/FundData";
-import FundItemData from "../models/FundItemData";
 
 export function useFundContract() {
   const { client } = useTonClient();
@@ -16,14 +15,13 @@ export function useFundContract() {
     Dictionary<bigint, Address> | undefined
   >();
   const [fundData, setFundData] = useState<FundData>();
-  const [likedItems, setLikedItems] = useState<FundItemData[]>();
-  const [availableItems, setAvailableItems] = useState<FundItemData[]>();
 
   const fundContract = useAsyncInitialize(async () => {
     if (!client) return;
+    //EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD
 
     const contract = new FundContract(
-      Address.parse("EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD")
+      Address.parse("EQDC7B5IcjQ8Qimnni963sagYAQeh4pE3CwQ49H5NsCxBRpr")
     );
 
     return client.open(contract) as OpenedContract<FundContract>;
@@ -31,20 +29,19 @@ export function useFundContract() {
 
   useEffect(() => {
     async function getAddresses() {
-      if (!fundContract) return;
-      const res = await fundContract.getAllItemsAddresses();
+      const res = await fundContract!.getAllItemsAddresses();
       setAddresses(res);
     }
 
     async function getFundData() {
-      if (!fundContract) return;
-
-      const res = await fundContract.getFundData();
+      const res = await fundContract!.getFundData();
       setFundData(res);
     }
 
-    getAddresses();
-    getFundData();
+    if (fundContract) {
+      getAddresses();
+      getFundData();
+    }
   }, [fundContract]);
 
   return {

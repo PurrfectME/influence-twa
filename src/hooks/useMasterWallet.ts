@@ -37,7 +37,7 @@ const parseJettonData = (dict: Slice) => {
 export function useMasterWallet() {
   const { sender } = useTonConnect();
   const { client } = useTonClient();
-  const addr = "EQAZpERzeN59gUYj2Z5aR9aHBZ8VV1ZcUEn--Z-zxqON77v_";
+  const addr = "EQC4Q8PDA-eE3XEF2s1W5gqYkh-T9wf0IwTvQU9w5UhUDj-0";
   const [jettonWalletAddress, setJettonWalletAddress] = useState<Address>();
   const [isInitialized, setIsInitialized] = useState(false);
   const [jettonData, setJettonData] = useState<{

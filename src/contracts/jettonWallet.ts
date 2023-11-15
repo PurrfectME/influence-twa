@@ -12,6 +12,7 @@ import JettonWalletData from "../models/JettonWalletData";
 export default class InfluenceJettonWallet implements Contract {
   async getWalletData(provider: ContractProvider): Promise<JettonWalletData> {
     const { stack } = await provider.get("get_wallet_data", []);
+    console.log("HERE");
 
     const balance = stack.readBigNumber();
     const owner = stack.readAddress();

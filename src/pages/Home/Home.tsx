@@ -19,6 +19,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Paper,
   Typography,
 } from "@mui/material";
 import { useFundContract } from "../../hooks/useFundContract";
@@ -78,7 +79,10 @@ export default function Home() {
           <TonConnectButton />
 
           {connected ? (
-            <Grid item>
+            <Paper
+              sx={{ paddingLeft: "20px", paddingRight: "20px" }}
+              elevation={3}
+            >
               <Grid
                 container
                 display={"flex"}
@@ -86,20 +90,25 @@ export default function Home() {
                 alignItems={"center"}
               >
                 <Grid item mr={"20px"}>
-                  {tonBalance ? `${fromNano(tonBalance)} TON` : 0}
+                  <h2>{tonBalance ? `${fromNano(tonBalance)} TON` : 0}</h2>
                 </Grid>
                 <Grid item>
                   <Grid container alignItems={"center"}>
                     <Grid item>
-                      {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
+                      <h2>
+                        {jettonWallet ? fromNano(jettonWallet.balance) : 0} INF
+                      </h2>
                     </Grid>
                     <Grid>
-                      <Avatar src={jettonData ? `${jettonData.image}` : ""} />
+                      <Avatar
+                        sx={{ width: 30, height: 30 }}
+                        src={jettonData ? `${jettonData.image}` : ""}
+                      />
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            </Paper>
           ) : (
             <div>Connect wallet to see actual balances</div>
           )}
