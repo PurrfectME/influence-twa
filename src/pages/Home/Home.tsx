@@ -94,10 +94,12 @@ export default function Home() {
         {/* <JettonsWallet owner={sender.address} /> */}
         {/* <Fund /> */}
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
-          {addresses && likedData && availableData && jettonWallet ? (
+          {addresses && likedData && availableData ? (
             <Items
               sendDonate={sendDonate}
-              senderJettonWalletBalance={jettonWallet.balance}
+              senderJettonWalletBalance={
+                jettonWallet ? jettonWallet.balance : 0n
+              }
               likedData={likedData ? likedData : []}
               availableData={availableData ? availableData : []}
             />

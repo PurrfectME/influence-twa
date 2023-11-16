@@ -28,6 +28,7 @@ export function useFundContract() {
 
   const fundContract = useAsyncInitialize(async () => {
     if (!client) return;
+
     //EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD
 
     const contract = new FundContract(
@@ -36,14 +37,15 @@ export function useFundContract() {
 
     const c = client.open(contract) as OpenedContract<FundContract>;
     const res = await c.getAllItemsAddresses();
+
     setAddresses(res);
 
     return client.open(contract) as OpenedContract<FundContract>;
   }, [client]);
 
   const a = useAsyncInitialize(async () => {
-    if (!addresses || !client || !sender.address || !isMasterInitialized)
-      return;
+    if (!addresses || !client) return;
+
     let arr: Address[] = [];
 
     for (let index = 1; index <= addresses.size; index++) {
@@ -59,14 +61,17 @@ export function useFundContract() {
     await Promise.all(
       arr.map(async (address, index) => {
         //sender wallet init
-        const senderWalletAddress = await getJettonWalletAddress(
-          sender.address!
-        );
-        const sWC = new InfluenceJettonWallet(senderWalletAddress!);
-        const senderWalletContract = client.open(
-          sWC
-        ) as OpenedContract<InfluenceJettonWallet>;
-        const { address: jettonSenderwalletAddress } = senderWalletContract;
+        let senderWalletAddress: Address | undefined;
+        let sWC: InfluenceJettonWallet;
+        let senderWalletContract: OpenedContract<InfluenceJettonWallet>;
+        let jettonSenderwalletAddress: Address | undefined;
+
+        if (sender.address) {
+          senderWalletAddress = await getJettonWalletAddress(sender.address!);
+          sWC = new InfluenceJettonWallet(senderWalletAddress!);
+          senderWalletContract = client.open(sWC);
+          jettonSenderwalletAddress = senderWalletContract.address;
+        }
 
         //fund item contract init
         const fundItem = new FundItemContract(address);
@@ -81,7 +86,6 @@ export function useFundContract() {
         let itemWalletData: JettonWalletData;
         //item wallet init
         const itemWalletAddress = await getJettonWalletAddress(address);
-        console.log("ADDR", itemWalletAddress);
 
         if (
           itemWalletAddress &&
@@ -92,7 +96,12 @@ export function useFundContract() {
           itemJettonAddress = itemWalletContract.address;
           itemWalletData = await itemWalletContract.getWalletData();
 
-          if (itemJettonAddress && data && itemWalletData) {
+          if (
+            data &&
+            itemWalletData &&
+            sender.address &&
+            jettonSenderwalletAddress
+          ) {
             const tranxs = await client.getTransactions(itemJettonAddress, {
               //TODO: enlardge limit
               limit: 20,
@@ -103,7 +112,7 @@ export function useFundContract() {
                 const trxSender = x.inMessage?.info.src?.toString();
                 if (
                   trxSender &&
-                  trxSender === jettonSenderwalletAddress.toString()
+                  trxSender === jettonSenderwalletAddress!.toString()
                 ) {
                   likedArr.push(
                     new ItemData(
@@ -137,6 +146,21 @@ export function useFundContract() {
                 }
               });
             }
+          } else {
+            availableArr.push(
+              new ItemData(
+                address,
+                data.description,
+                data.amountToHelp,
+                data.currentAmount,
+                data.title,
+                data.deployTime,
+                data.imageUrl,
+                data.seqno,
+                itemWalletData.balance,
+                false
+              )
+            );
           }
         } else {
           availableArr.push(
@@ -158,7 +182,7 @@ export function useFundContract() {
     );
 
     return { likedArr, availableArr };
-  }, [client, isMasterInitialized]);
+  }, [client, addresses]);
 
   useEffect(() => {
     async function getAddresses() {
