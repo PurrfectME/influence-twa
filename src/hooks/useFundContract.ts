@@ -23,7 +23,6 @@ export function useFundContract() {
     useMasterWallet();
   const [likedArr, setLikedArr] = useState<ItemData[]>();
   const [availableArr, setAvailableArr] = useState<ItemData[]>();
-  const [loading, setLoading] = useState<boolean>(true);
   const [addresses, setAddresses] = useState<
     Dictionary<bigint, Address> | undefined
   >();
@@ -31,8 +30,6 @@ export function useFundContract() {
 
   const fundContract = useAsyncInitialize(async () => {
     if (!client || !isMasterInitialized) return;
-
-    //EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD
 
     const contract = new FundContract(
       Address.parse("EQDC7B5IcjQ8Qimnni963sagYAQeh4pE3CwQ49H5NsCxBRpr")
@@ -48,24 +45,6 @@ export function useFundContract() {
 
     return result;
   }, [client, isMasterInitialized]);
-
-  // const { data: addresses } = useQuery(
-  //   ["addresses"],
-  //   async () => {
-  //     console.log("ADDDDRESESE");
-
-  //     return await fundContract!.getAllItemsAddresses();
-  //   },
-  //   { enabled: fundContract !== undefined && isMasterInitialized }
-  // );
-
-  // const { data: fundData } = useQuery(
-  //   ["fundData"],
-  //   async () => {
-  //     return await fundContract!.getFundData();
-  //   },
-  //   { enabled: fundContract !== undefined }
-  // );
 
   async function fetchItems() {
     //sender wallet init
@@ -191,12 +170,9 @@ export function useFundContract() {
 
     setLikedArr(likedArr);
     setAvailableArr(availableArr);
-    setLoading(false);
   }
 
   useEffect(() => {
-    setLoading(true);
-
     if (!addresses) return;
 
     fetchItems();
@@ -217,6 +193,6 @@ export function useFundContract() {
     addresses: addresses,
     likedData: likedArr,
     availableData: availableArr,
-    loading,
+    fetchItems,
   };
 }

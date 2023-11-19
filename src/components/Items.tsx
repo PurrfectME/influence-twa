@@ -2,6 +2,7 @@ import { ItemData } from "../models/ItemData";
 import { Grid } from "@mui/material";
 import FundItemWrapper from "./FundItemWrapper";
 import { Address } from "ton-core";
+import { Dispatch, SetStateAction } from "react";
 
 export interface IItemsProps {
   likedData: ItemData[];
@@ -11,6 +12,8 @@ export interface IItemsProps {
     destination: Address,
     amount: bigint
   ) => Promise<void> | undefined;
+  fetchItems: () => Promise<void>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Items({
@@ -18,6 +21,8 @@ export default function Items({
   availableData,
   senderJettonWalletBalance,
   sendDonate,
+  fetchItems,
+  setLoading,
 }: IItemsProps) {
   return (
     <>
@@ -46,6 +51,8 @@ export default function Items({
               balance={x.balance}
               liked={x.liked}
               sendDonate={sendDonate}
+              fetchItems={fetchItems}
+              setLoading={setLoading}
             />
           ))}
         </Grid>
@@ -77,6 +84,8 @@ export default function Items({
               balance={x.balance}
               liked={x.liked}
               sendDonate={sendDonate}
+              fetchItems={fetchItems}
+              setLoading={setLoading}
             />
           ))}
         </Grid>

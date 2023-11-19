@@ -4,7 +4,7 @@ import { FundItemBox, ImageBox } from "./styled/styled";
 import { ItemData } from "../models/ItemData";
 import { useTonConnect } from "../hooks/useTonConnect";
 import { useTonConnectUI } from "@tonconnect/ui-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
 
 export interface IItemWrapperProps {
@@ -19,6 +19,8 @@ export interface IItemWrapperProps {
     destination: Address,
     amount: bigint
   ) => Promise<void> | undefined;
+  fetchItems: () => Promise<void>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function FundItemWrapper({
@@ -27,9 +29,10 @@ export default function FundItemWrapper({
   balance: currentAmount,
   liked,
   destinationAddress,
-  amountToHelp,
   senderJettonWalletBalance,
   sendDonate,
+  fetchItems,
+  setLoading,
 }: IItemWrapperProps) {
   const { connected } = useTonConnect();
   const [tonConnectUI] = useTonConnectUI();
@@ -118,7 +121,15 @@ export default function FundItemWrapper({
                   sendDonate(
                     destinationAddress,
                     senderJettonWalletBalance / BigInt(10)
-                  );
+                  )?.then((_) => {
+                    setLoading(true);
+                    console.log("FETCH");
+
+                    fetchItems().then((_) => {
+                      console.log("inside fetch");
+                      setLoading(false);
+                    });
+                  });
                 }}
               >
                 <Typography color="white" fontSize="10px">

@@ -22,7 +22,6 @@ export default function useJettonWallet(owner: Address | undefined) {
   const { getJettonWalletAddress, isInitialized: isMasterInitialized } =
     useMasterWallet();
   const [walletData, setWalletData] = useState<JettonWalletData>();
-  const queryClient = useQueryClient();
 
   const jettonWalletContract = useAsyncInitialize(async () => {
     if (!client || !isMasterInitialized || !owner) return;
@@ -38,12 +37,6 @@ export default function useJettonWallet(owner: Address | undefined) {
 
     return res;
   }, [client, isMasterInitialized]);
-
-  const sendDonateMutation = useMutation({
-    mutationFn: ({ destination, amount }: IP) => {
-      return jettonWalletContract!.sendDonate(sender, destination, amount);
-    },
-  });
 
   return {
     data: walletData,
@@ -67,10 +60,6 @@ export default function useJettonWallet(owner: Address | undefined) {
           limit: 1,
         });
         if (tx) txHash = tx[0].stateUpdate.newHash.toString();
-
-        await queryClient.invalidateQueries({
-          queryKey: ["likedAndAvailableData"],
-        });
       }
     },
   };

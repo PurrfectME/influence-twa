@@ -31,8 +31,9 @@ export default function Home() {
   const { client } = useTonClient();
   const navigate = useNavigate();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  const { likedData, availableData, loading } = useFundContract();
+  const { likedData, availableData, fetchItems } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const TonSymbol = (
     <svg
@@ -60,6 +61,10 @@ export default function Home() {
     //   buttonRootId: "ton-connect-ultra",
     // };
 
+    if (likedData && availableData) {
+      setLoading(false);
+    }
+
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
       const tonBalance = await client!.getBalance(address);
@@ -70,7 +75,7 @@ export default function Home() {
     if (client && wallet) {
       getBalances();
     }
-  }, [client, wallet]);
+  }, [client, wallet, likedData, availableData]);
 
   const nanoToFixed = (number: bigint) => {
     const num = fromNano(number);
@@ -129,12 +134,12 @@ export default function Home() {
             <div>Connect wallet to see actual balances</div>
           )}
         </Grid>
-        {/* <FlexBoxRow>
+        <FlexBoxRow>
           <Button onClick={createFund}>Создать фонд</Button>
           <Button onClick={() => navigate("/influence-twa/requests")}>
             Заявки
           </Button>
-        </FlexBoxRow> */}
+        </FlexBoxRow>
 
         {connected ? (
           <Grid item mt={"20px"}>
@@ -149,6 +154,8 @@ export default function Home() {
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
           {!loading ? (
             <Items
+              setLoading={setLoading}
+              fetchItems={fetchItems}
               sendDonate={sendDonate}
               senderJettonWalletBalance={
                 jettonWallet ? jettonWallet.balance : 0n
