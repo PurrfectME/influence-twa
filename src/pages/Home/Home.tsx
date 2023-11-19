@@ -9,6 +9,7 @@ import { useMasterWallet } from "../../hooks/useMasterWallet";
 import { useNavigate } from "react-router-dom";
 import {
   Avatar,
+  Card,
   CircularProgress,
   Grid,
   Paper,
@@ -20,6 +21,8 @@ import { useEffect, useState } from "react";
 import { useTonClient } from "../../hooks/useTonClient";
 import useJettonWallet from "../../hooks/useJettonWallet";
 import Items from "../../components/Items";
+import { useAsyncInitialize } from "../../hooks/useAsyncInitialize";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
@@ -28,7 +31,7 @@ export default function Home() {
   const { client } = useTonClient();
   const navigate = useNavigate();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  const { likedData, availableData, addresses } = useFundContract();
+  const { likedData, availableData, loading } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
 
   const TonSymbol = (
@@ -56,6 +59,7 @@ export default function Home() {
     // tonConnectUI.uiOptions = {
     //   buttonRootId: "ton-connect-ultra",
     // };
+
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
       const tonBalance = await client!.getBalance(address);
@@ -86,17 +90,18 @@ export default function Home() {
           {/* <button id="ton-connect-ultra"></button> */}
 
           {connected ? (
-            <Paper
-              sx={{ paddingLeft: "20px", paddingRight: "20px" }}
-              elevation={3}
-            >
-              <Grid
-                container
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
+            <Grid item ml={"20px"}>
+              <Card
+                sx={{ paddingLeft: "20px", paddingRight: "20px" }}
+                elevation={3}
               >
-                <Grid container>
+                <Grid
+                  container
+                  display={"flex"}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  alignContent={"center"}
+                >
                   <Grid item mr={"10px"}>
                     <h2>{tonBalance ? nanoToFixed(tonBalance) : 0}</h2>
                   </Grid>
@@ -106,8 +111,6 @@ export default function Home() {
                       inheritViewBox
                     />
                   </Grid>
-                </Grid>
-                <Grid container>
                   <Grid item mr={"10px"}>
                     <h2>
                       {jettonWallet ? nanoToFixed(jettonWallet.balance) : 0}
@@ -120,8 +123,8 @@ export default function Home() {
                     />
                   </Grid>
                 </Grid>
-              </Grid>
-            </Paper>
+              </Card>
+            </Grid>
           ) : (
             <div>Connect wallet to see actual balances</div>
           )}
@@ -132,12 +135,19 @@ export default function Home() {
             Заявки
           </Button>
         </FlexBoxRow> */}
-        {connected ? <TransferTon mintTokens={mintTokens} /> : <></>}
+
+        {connected ? (
+          <Grid item mt={"20px"}>
+            <TransferTon mintTokens={mintTokens} />
+          </Grid>
+        ) : (
+          <></>
+        )}
 
         {/* <JettonsWallet owner={sender.address} /> */}
         {/* <Fund /> */}
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
-          {addresses && likedData && availableData ? (
+          {!loading ? (
             <Items
               sendDonate={sendDonate}
               senderJettonWalletBalance={

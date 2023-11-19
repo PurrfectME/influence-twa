@@ -18,12 +18,19 @@ import JettonWalletData from "../models/JettonWalletData";
 
 export function useFundContract() {
   const { client } = useTonClient();
-  const { sender } = useTonConnect();
+  const { sender, connected, tonConnectUI } = useTonConnect();
   const { getJettonWalletAddress, isInitialized: isMasterInitialized } =
     useMasterWallet();
+  const [likedArr, setLikedArr] = useState<ItemData[]>();
+  const [availableArr, setAvailableArr] = useState<ItemData[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [addresses, setAddresses] = useState<
+    Dictionary<bigint, Address> | undefined
+  >();
+  const [fundData, setFundData] = useState<FundData>();
 
   const fundContract = useAsyncInitialize(async () => {
-    if (!client) return;
+    if (!client || !isMasterInitialized) return;
 
     //EQCotjVl4ABkpigiudLRuyuRLow3R2qw3CJAtnScPzthn6AD
 
@@ -31,132 +38,120 @@ export function useFundContract() {
       Address.parse("EQDC7B5IcjQ8Qimnni963sagYAQeh4pE3CwQ49H5NsCxBRpr")
     );
 
-    const c = client.open(contract) as OpenedContract<FundContract>;
+    const result = client.open(contract) as OpenedContract<FundContract>;
 
-    return client.open(contract) as OpenedContract<FundContract>;
-  }, [client]);
+    const addresses = await result.getAllItemsAddresses();
+    setAddresses(addresses!);
 
-  const { data: addresses } = useQuery(
-    ["addresses"],
-    async () => {
-      return await fundContract!.getAllItemsAddresses();
-    },
-    { enabled: fundContract !== undefined }
-  );
+    const data = await result.getFundData();
+    setFundData(data);
 
-  const { data: fundData } = useQuery(
-    ["fundData"],
-    async () => {
-      return await fundContract!.getFundData();
-    },
-    { enabled: fundContract !== undefined }
-  );
+    return result;
+  }, [client, isMasterInitialized]);
 
-  const { data, status, isFetching } = useQuery(
-    ["likedAndAvailableData"],
-    async () => {
-      console.log("BLIP");
+  // const { data: addresses } = useQuery(
+  //   ["addresses"],
+  //   async () => {
+  //     console.log("ADDDDRESESE");
 
-      //sender wallet init
-      let senderWalletAddress: Address | undefined;
-      let sWC: InfluenceJettonWallet;
-      let senderWalletContract: OpenedContract<InfluenceJettonWallet>;
-      let jettonSenderwalletAddress: Address | undefined;
+  //     return await fundContract!.getAllItemsAddresses();
+  //   },
+  //   { enabled: fundContract !== undefined && isMasterInitialized }
+  // );
 
-      if (sender.address) {
-        senderWalletAddress = await getJettonWalletAddress(sender.address);
-        sWC = new InfluenceJettonWallet(senderWalletAddress!);
-        senderWalletContract = client!.open(sWC);
-        jettonSenderwalletAddress = senderWalletContract.address;
+  // const { data: fundData } = useQuery(
+  //   ["fundData"],
+  //   async () => {
+  //     return await fundContract!.getFundData();
+  //   },
+  //   { enabled: fundContract !== undefined }
+  // );
+
+  async function fetchItems() {
+    //sender wallet init
+    let senderWalletAddress: Address | undefined;
+    let sWC: InfluenceJettonWallet;
+    let senderWalletContract: OpenedContract<InfluenceJettonWallet>;
+    let jettonSenderwalletAddress: Address | undefined;
+
+    if (sender.address) {
+      senderWalletAddress = await getJettonWalletAddress(sender.address);
+      sWC = new InfluenceJettonWallet(senderWalletAddress!);
+      senderWalletContract = client!.open(sWC);
+      jettonSenderwalletAddress = senderWalletContract.address;
+    }
+
+    let likedArr: ItemData[] = [];
+    let availableArr: ItemData[] = [];
+    let arr: Address[] = [];
+
+    for (let index = 1; index <= addresses!.size; index++) {
+      const address = addresses!.get(BigInt(index));
+      if (address) {
+        arr.push(address);
       }
+    }
 
-      let likedArr: ItemData[] = [];
-      let availableArr: ItemData[] = [];
-      let arr: Address[] = [];
+    await Promise.all(
+      arr.map(async (address, i) => {
+        //fund item contract init
+        const fundItem = new FundItemContract(address);
+        const fundItemContract = client!.open(
+          fundItem
+        ) as OpenedContract<FundItemContract>;
+        const data = await fundItemContract.getItemData();
 
-      for (let index = 1; index <= addresses!.size; index++) {
-        const address = addresses!.get(BigInt(index));
-        if (address) {
-          arr.push(address);
-        }
-      }
+        //item wallet init
+        let iWC: InfluenceJettonWallet;
+        let itemWalletContract: OpenedContract<InfluenceJettonWallet>;
+        let itemJettonAddress: Address;
+        let itemWalletData: JettonWalletData;
+        const itemWalletAddress = await getJettonWalletAddress(address);
 
-      await Promise.all(
-        arr.map(async (address, i) => {
-          //fund item contract init
-          const fundItem = new FundItemContract(address);
-          const fundItemContract = client!.open(
-            fundItem
-          ) as OpenedContract<FundItemContract>;
-          const data = await fundItemContract.getItemData();
+        if (
+          itemWalletAddress &&
+          (await client!.isContractDeployed(itemWalletAddress))
+        ) {
+          iWC = new InfluenceJettonWallet(itemWalletAddress);
+          itemWalletContract = client!.open(iWC);
+          itemJettonAddress = itemWalletContract.address;
+          itemWalletData = await itemWalletContract.getWalletData();
 
-          //item wallet init
-          let iWC: InfluenceJettonWallet;
-          let itemWalletContract: OpenedContract<InfluenceJettonWallet>;
-          let itemJettonAddress: Address;
-          let itemWalletData: JettonWalletData;
-          const itemWalletAddress = await getJettonWalletAddress(address);
+          if (data && itemWalletData && sender.address) {
+            const tranxs = await client!.getTransactions(itemJettonAddress, {
+              //TODO: enlardge limit
+              limit: 20,
+            });
 
-          if (
-            itemWalletAddress &&
-            (await client!.isContractDeployed(itemWalletAddress))
-          ) {
-            iWC = new InfluenceJettonWallet(itemWalletAddress);
-            itemWalletContract = client!.open(iWC);
-            itemJettonAddress = itemWalletContract.address;
-            itemWalletData = await itemWalletContract.getWalletData();
+            if (tranxs) {
+              const hasAny = tranxs.some((x) => {
+                const trxSender = x.inMessage?.info.src?.toString();
+                if (
+                  trxSender &&
+                  trxSender === jettonSenderwalletAddress!.toString()
+                ) {
+                  return true;
+                }
 
-            if (data && itemWalletData && sender.address) {
-              const tranxs = await client!.getTransactions(itemJettonAddress, {
-                //TODO: enlardge limit
-                limit: 40,
+                return false;
               });
 
-              if (tranxs) {
-                const hasAny = tranxs.some((x) => {
-                  const trxSender = x.inMessage?.info.src?.toString();
-                  if (
-                    trxSender &&
-                    trxSender === jettonSenderwalletAddress!.toString()
-                  ) {
-                    return true;
-                  }
-
-                  return false;
-                });
-
-                if (hasAny) {
-                  likedArr.push(
-                    new ItemData(
-                      address,
-                      data.description,
-                      data.amountToHelp,
-                      data.currentAmount,
-                      data.title,
-                      data.deployTime,
-                      data.imageUrl,
-                      data.seqno,
-                      itemWalletData.balance,
-                      true
-                    )
-                  );
-                }
+              if (hasAny) {
+                likedArr.push(
+                  new ItemData(
+                    address,
+                    data.description,
+                    data.amountToHelp,
+                    data.currentAmount,
+                    data.title,
+                    data.deployTime,
+                    data.imageUrl,
+                    data.seqno,
+                    itemWalletData.balance,
+                    true
+                  )
+                );
               }
-            } else {
-              availableArr.push(
-                new ItemData(
-                  address,
-                  data.description,
-                  data.amountToHelp,
-                  data.currentAmount,
-                  data.title,
-                  data.deployTime,
-                  data.imageUrl,
-                  data.seqno,
-                  itemWalletData.balance,
-                  false
-                )
-              );
             }
           } else {
             availableArr.push(
@@ -169,27 +164,59 @@ export function useFundContract() {
                 data.deployTime,
                 data.imageUrl,
                 data.seqno,
-                0n,
+                itemWalletData.balance,
                 false
               )
             );
           }
-        })
-      );
+        } else {
+          availableArr.push(
+            new ItemData(
+              address,
+              data.description,
+              data.amountToHelp,
+              data.currentAmount,
+              data.title,
+              data.deployTime,
+              data.imageUrl,
+              data.seqno,
+              0n,
+              false
+            )
+          );
+        }
+        // await new Promise((r) => setTimeout(r, 1500));
+      })
+    );
 
-      return { likedArr, availableArr };
-    },
-    {
-      enabled: addresses != undefined && isMasterInitialized,
-    }
-  );
+    setLikedArr(likedArr);
+    setAvailableArr(availableArr);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    setLoading(true);
+
+    if (!addresses) return;
+
+    fetchItems();
+  }, [connected, addresses]);
+
+  // tonConnectUI.onStatusChange(async (wallet) => {
+  //   if (addresses && isMasterInitialized) {
+  //     console.log("kjkj");
+
+  //     fetchItems();
+  //   }
+  // });
 
   return {
     data: fundData,
     getLastItemAddress: () => fundContract?.getLastItemAddress(),
     createItem: () => fundContract?.sendCreateItem(sender),
     addresses: addresses,
-    likedData: data?.likedArr,
-    availableData: data?.availableArr,
+    likedData: likedArr,
+    availableData: availableArr,
+    loading,
   };
 }

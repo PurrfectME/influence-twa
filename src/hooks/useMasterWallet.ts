@@ -54,12 +54,12 @@ export function useMasterWallet() {
 
     const res = client.open(contract) as OpenedContract<MasterWallet>;
 
-    const jd = await res.getJettonData();
-
-    const jettonData = parseJettonData(jd.content.asSlice());
-    setJettonData(jettonData);
-
     if (sender.address) {
+      const jd = await res.getJettonData();
+
+      const jettonData = parseJettonData(jd.content.asSlice());
+      setJettonData(jettonData);
+
       const jettonAddress = await res.getJettonWalletAddress(sender.address);
 
       setJettonWalletAddress(jettonAddress);
