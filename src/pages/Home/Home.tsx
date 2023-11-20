@@ -31,7 +31,7 @@ export default function Home() {
   const { client } = useTonClient();
   const navigate = useNavigate();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  const { likedData, availableData, fetchItems } = useFundContract();
+  // const { likedData, availableData, fetchItems } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -61,9 +61,9 @@ export default function Home() {
     //   buttonRootId: "ton-connect-ultra",
     // };
 
-    if (likedData && availableData) {
-      setLoading(false);
-    }
+    // if (likedData && availableData) {
+    //   setLoading(false);
+    // }
 
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
@@ -75,11 +75,18 @@ export default function Home() {
     if (client && wallet) {
       getBalances();
     }
-  }, [client, wallet, likedData, availableData]);
+    // likedData, availableData
+  }, [client, wallet]);
 
   const nanoToFixed = (number: bigint) => {
     const num = fromNano(number);
     const splitted = num.split(".");
+    console.log("SPLIt", splitted);
+
+    if (splitted.length == 1) {
+      return num;
+    }
+
     let res = `${splitted[0]}.${splitted[1].slice(0, 2)}`;
 
     return res;
@@ -105,18 +112,15 @@ export default function Home() {
                   display={"flex"}
                   flexDirection={"row"}
                   alignItems={"center"}
-                  alignContent={"center"}
                 >
-                  <Grid item mr={"10px"}>
+                  <Grid item mr={"5px"}>
                     <h2>{tonBalance ? nanoToFixed(tonBalance) : 0}</h2>
                   </Grid>
-                  <Grid item>
-                    <SvgIcon
-                      component={createSvgIcon(TonSymbol, "ASD")}
-                      inheritViewBox
-                    />
-                  </Grid>
-                  <Grid item mr={"10px"}>
+                  <SvgIcon
+                    component={createSvgIcon(TonSymbol, "ASD")}
+                    inheritViewBox
+                  />
+                  <Grid item ml={"10px"}>
                     <h2>
                       {jettonWallet ? nanoToFixed(jettonWallet.balance) : 0}
                     </h2>
@@ -149,9 +153,7 @@ export default function Home() {
           <></>
         )}
 
-        {/* <JettonsWallet owner={sender.address} /> */}
-        {/* <Fund /> */}
-        <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
+        {/* <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
           {!loading ? (
             <Items
               setLoading={setLoading}
@@ -173,7 +175,7 @@ export default function Home() {
               <CircularProgress />
             </Grid>
           )}
-        </Grid>
+        </Grid> */}
       </>
     </Grid>
   );

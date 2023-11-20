@@ -14,11 +14,14 @@ export default class InfluenceJettonWallet implements Contract {
     const { stack } = await provider.get("get_wallet_data", []);
 
     const balance = stack.readBigNumber();
+    console.log("BAL", balance);
+
     const owner = stack.readAddress();
     const master = stack.readAddress();
     const walletCode = stack.readCell().asSlice().loadRef();
+    const title = stack.readString();
 
-    return { balance, owner, master, walletCode };
+    return { balance, owner, master, walletCode, title };
   }
 
   async sendDonate(
