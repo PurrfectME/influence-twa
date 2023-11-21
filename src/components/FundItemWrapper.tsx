@@ -15,9 +15,11 @@ export interface IItemWrapperProps {
   destinationAddress: Address;
   amountToHelp: bigint;
   senderJettonWalletBalance: bigint;
+  itemSeqno: bigint,
   sendDonate: (
     destination: Address,
-    amount: bigint
+    amount: bigint,
+    itemSeqno: bigint
   ) => Promise<void> | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -30,6 +32,7 @@ export default function FundItemWrapper({
   liked,
   destinationAddress,
   senderJettonWalletBalance,
+  itemSeqno,
   sendDonate,
   fetchItems,
   setLoading,
@@ -54,7 +57,7 @@ export default function FundItemWrapper({
             <Grid container>
               <Grid item mb={"0.9rem"}>
                 <div>
-                  <h3>{title}</h3>
+                  <h3>{title} {fromNano(itemSeqno)}</h3>
                   <div>{description}</div>
                 </div>
               </Grid>
@@ -118,9 +121,11 @@ export default function FundItemWrapper({
                   //TODO: if 10% is > than needed than calculate only needed amount
                   //TODO: if balance < MIN value then ask to send the remaining balance
                   //10% from total user's jetton balance
+                  
                   sendDonate(
                     destinationAddress,
-                    senderJettonWalletBalance / BigInt(10)
+                    senderJettonWalletBalance / BigInt(10),
+                    itemSeqno
                   )?.then((_) => {
                     setLoading(true);
                     console.log("FETCH");

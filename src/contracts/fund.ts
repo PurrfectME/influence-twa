@@ -15,7 +15,6 @@ export default class FundContract implements Contract {
 
     const name = stack.readString();
     const description = stack.readString();
-    const jettonBalance = stack.readBigNumber();
     const fundBalance = stack.readBigNumber();
     const image = stack.readString();
     const owner = stack.readAddress();
@@ -25,7 +24,6 @@ export default class FundContract implements Contract {
     return {
       name,
       description,
-      jettonBalance,
       fundBalance,
       image,
       owner,
@@ -46,8 +44,14 @@ export default class FundContract implements Contract {
   async getAllItemsAddresses(
     provider: ContractProvider
   ): Promise<Dictionary<bigint, Address> | undefined> {
-    const { stack } = await provider.get("allItemsAddresses", []);
-    //TODO: сколько битов 257-битный инт займёт))0)
+    const { stack } = await provider.get("getAllItemsAddresses", []);
+
+    //TODO: catch error or fuck it. TOnCLient cant process emptyMap from tact
+    if (stack.remaining == 0) {
+      return Dictionary.empty();
+    }
+
+    //TODO: asda
     const res = stack
       .readCell()
       .asSlice()
@@ -57,8 +61,10 @@ export default class FundContract implements Contract {
     return res;
   }
 
-  async getLastItemAddress(provider: ContractProvider) {
-    const { stack } = await provider.get("lastItemAddress", []);
+  async getItemAddress(provider: ContractProvider, itemSeqno: bigint) {
+    const { stack } = await provider.get("getItemAddress", [
+      { type: 'int', value: itemSeqno },
+    ]);
 
     return stack.readAddress();
   }

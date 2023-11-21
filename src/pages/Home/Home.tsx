@@ -29,9 +29,9 @@ export default function Home() {
   const { sender, connected, tonConnectUI } = useTonConnect();
   const wallet = useTonWallet();
   const { client } = useTonClient();
-  const navigate = useNavigate();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  // const { likedData, availableData, fetchItems } = useFundContract();
+  const { likedData, availableData, fetchItems, createItem } =
+    useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -61,9 +61,12 @@ export default function Home() {
     //   buttonRootId: "ton-connect-ultra",
     // };
 
-    // if (likedData && availableData) {
-    //   setLoading(false);
-    // }
+    if (likedData && availableData) {
+      console.log("LIKED", likedData);
+
+      console.log("availableData", availableData);
+      setLoading(false);
+    }
 
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
@@ -75,20 +78,15 @@ export default function Home() {
     if (client && wallet) {
       getBalances();
     }
-    // likedData, availableData
-  }, [client, wallet]);
+  }, [client, wallet, likedData, availableData]);
 
   const nanoToFixed = (number: bigint) => {
     const num = fromNano(number);
     const splitted = num.split(".");
-    console.log("SPLIt", splitted);
-
     if (splitted.length == 1) {
       return num;
     }
-
     let res = `${splitted[0]}.${splitted[1].slice(0, 2)}`;
-
     return res;
   };
 
@@ -140,9 +138,7 @@ export default function Home() {
         </Grid>
         <FlexBoxRow>
           <Button onClick={createFund}>Создать фонд</Button>
-          <Button onClick={() => navigate("/influence-twa/requests")}>
-            Заявки
-          </Button>
+          <Button onClick={createItem}>Создать заявку</Button>
         </FlexBoxRow>
 
         {connected ? (
@@ -153,7 +149,7 @@ export default function Home() {
           <></>
         )}
 
-        {/* <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
+        <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
           {!loading ? (
             <Items
               setLoading={setLoading}
@@ -175,7 +171,7 @@ export default function Home() {
               <CircularProgress />
             </Grid>
           )}
-        </Grid> */}
+        </Grid>
       </>
     </Grid>
   );

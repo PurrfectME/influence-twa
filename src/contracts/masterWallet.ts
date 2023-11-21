@@ -62,12 +62,11 @@ export default class MasterWallet implements Contract {
     receiver: Address,
     sender: Sender
   ) {
-    console.log("ASD", sender.address?.toString());
-
     const body = beginCell()
       .storeUint(4235234258, 32)
       .storeInt(amount, 257)
       .storeAddress(receiver)
+      .storeUint(0, 256)
       .endCell();
 
     await provider.internal(sender, {

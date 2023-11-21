@@ -10,7 +10,8 @@ export interface IItemsProps {
   senderJettonWalletBalance: bigint;
   sendDonate: (
     destination: Address,
-    amount: bigint
+    amount: bigint,
+    itemSeqno: bigint
   ) => Promise<void> | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -50,6 +51,7 @@ export default function Items({
               title={x.title}
               balance={x.balance}
               liked={x.liked}
+              itemSeqno={x.seqno}
               sendDonate={sendDonate}
               fetchItems={fetchItems}
               setLoading={setLoading}
@@ -83,6 +85,7 @@ export default function Items({
               title={x.title}
               balance={x.balance}
               liked={x.liked}
+              itemSeqno={x.seqno}
               sendDonate={sendDonate}
               fetchItems={fetchItems}
               setLoading={setLoading}
