@@ -51,11 +51,9 @@ export default class FundContract implements Contract {
       return Dictionary.empty();
     }
 
-    //TODO: asda
     const res = stack
       .readCell()
       .asSlice()
-
       .loadDictDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
 
     return res;

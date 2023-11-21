@@ -66,7 +66,7 @@ export default class InfluenceJettonWallet implements Contract {
       .endCell();
 
     await provider.internal(sender, {
-      value: toNano("0.3"),
+      value: toNano("0.1"),
       body: body,
     });
   }

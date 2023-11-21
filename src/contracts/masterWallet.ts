@@ -41,7 +41,7 @@ export default class MasterWallet implements Contract {
     const body = beginCell().storeUint(0, 32).storeStringTail("fund").endCell();
 
     await provider.internal(via, {
-      value: toNano("0.5"),
+      value: toNano("0.4"),
       body: body,
     });
   }
@@ -63,10 +63,10 @@ export default class MasterWallet implements Contract {
     sender: Sender
   ) {
     const body = beginCell()
-      .storeUint(4235234258, 32)
+      .storeUint(1117655485, 32)
       .storeInt(amount, 257)
       .storeAddress(receiver)
-      .storeUint(0, 256)
+      .storeUint(1, 256)
       .endCell();
 
     await provider.internal(sender, {

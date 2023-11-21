@@ -32,7 +32,7 @@ export function useFundContract() {
     if (!client || !isMasterInitialized) return;
 
     const contract = new FundContract(
-      Address.parse("EQAyLJn0EQFGOn_Hl2CgvEao2wpfPEoIp0maY_u9G43VPzqG")
+      Address.parse("EQD8uK5peMMVUAc5GgVjufjdoqovB9TsgjngBc1qjXePzu8x")
     );
 
     const result = client.open(contract) as OpenedContract<FundContract>;
@@ -95,6 +95,9 @@ export function useFundContract() {
           //TODO: enlarge limit
           limit: 20,
         });
+
+        
+        
 
         if (tranxs) {
           const hasAny = tranxs.some((x) => {
