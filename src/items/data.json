@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "TITLE",
+    "description": "DESCRIPTION",
+    "currentAmount": 0,
+    "amountToHelp": 20,
+    "imageUrl": "IMAGE"
+  },
+  {
+    "id": 2,
+    "title": "TITLE",
+    "description": "DESCRIPTION",
+    "currentAmount": 0,
+    "amountToHelp": 20,
+    "imageUrl": "IMAGE"
+  }
+]

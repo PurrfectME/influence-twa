@@ -18,29 +18,29 @@ export default class InfluenceJettonWallet implements Contract {
     const owner = stack.readAddress();
     const master = stack.readAddress();
     const walletCode = stack.readCell().asSlice().loadRef();
-    const title = stack.readString();
-    const isDonater = stack.readBoolean();
-    const seqno = stack.readBigNumber();
-    const description = stack.readString();
-    const amountToHelp = stack.readBigNumber();
-    //TODO: remove this from contract. currentAmount == jetton balance of wallet
-    const currentAmount = stack.readBigNumber();
-    const deployTime = stack.readBigNumber();
-    const imageUrl = stack.readString();
+    // const title = stack.readString();
+    // const isDonater = stack.readBoolean();
+    // const seqno = stack.readBigNumber();
+    // const description = stack.readString();
+    // const amountToHelp = stack.readBigNumber();
+    // //TODO: remove this from contract. currentAmount == jetton balance of wallet
+    // const currentAmount = stack.readBigNumber();
+    // const deployTime = stack.readBigNumber();
+    // const imageUrl = stack.readString();
 
     return {
       balance,
       owner,
       master,
       walletCode,
-      title,
-      isDonater,
-      seqno,
-      description,
-      amountToHelp,
-      currentAmount,
-      deployTime,
-      imageUrl,
+      // title,
+      // isDonater,
+      // seqno,
+      // description,
+      // amountToHelp,
+      // currentAmount,
+      // deployTime,
+      // imageUrl,
     };
   }
 

@@ -30,8 +30,12 @@ export default function Home() {
   const wallet = useTonWallet();
   const { client } = useTonClient();
   const { createFund, mintTokens, jettonData } = useMasterWallet();
-  const { likedData, availableData, fetchItems, createItem } =
-    useFundContract();
+  const {
+    likedData,
+    availableData,
+    createItem,
+    address: fundAddress,
+  } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -139,6 +143,15 @@ export default function Home() {
         <FlexBoxRow>
           <Button onClick={createFund}>Создать фонд</Button>
           <Button onClick={createItem}>Создать заявку</Button>
+          <Button
+            onClick={() => {
+              if (jettonWallet) {
+                sendDonate(fundAddress!, jettonWallet.balance / BigInt(10), 0n);
+              }
+            }}
+          >
+            Лайк
+          </Button>
         </FlexBoxRow>
 
         {connected ? (
@@ -153,7 +166,7 @@ export default function Home() {
           {!loading ? (
             <Items
               setLoading={setLoading}
-              fetchItems={fetchItems}
+              // fetchItems={fetchItems}
               sendDonate={sendDonate}
               senderJettonWalletBalance={
                 jettonWallet ? jettonWallet.balance : 0n

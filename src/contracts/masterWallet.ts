@@ -63,10 +63,9 @@ export default class MasterWallet implements Contract {
     sender: Sender
   ) {
     const body = beginCell()
-      .storeUint(1117655485, 32)
+      .storeUint(4235234258, 32)
       .storeInt(amount, 257)
       .storeAddress(receiver)
-      .storeUint(1, 256)
       .endCell();
 
     await provider.internal(sender, {
