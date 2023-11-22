@@ -81,10 +81,6 @@ export function useFundContract() {
             // const reader = new BitReader(x.inMessage!.body!.asSlice().remainingBits);
             const cell = x.inMessage?.body.asSlice()!;
 
-            // const id = cell?.loadBits(cell.remainingBits);
-
-            // const jsonString = cell.toString("utf8");
-
             // const a = cell?.loadAddress();
             console.log("OP", cell.loadUint(32));
 
