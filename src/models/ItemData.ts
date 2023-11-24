@@ -6,7 +6,7 @@ export class ItemData {
   amountToHelp: bigint;
   currentAmount: bigint;
   title: String;
-  deployTime: bigint;
+  // deployTime: bigint;
   imageUrl: String;
   seqno: bigint;
   balance: bigint;
@@ -18,7 +18,7 @@ export class ItemData {
     amountToHelp: bigint,
     currentAmount: bigint,
     title: String,
-    deployTime: bigint,
+    // deployTime: bigint,
     imageUrl: String,
     seqno: bigint,
     balance: bigint,
@@ -29,7 +29,7 @@ export class ItemData {
     this.amountToHelp = amountToHelp;
     this.currentAmount = currentAmount;
     this.title = title;
-    this.deployTime = deployTime;
+    // this.deployTime = deployTime;
     this.imageUrl = imageUrl;
     this.seqno = seqno;
     this.balance = balance;
