@@ -48,7 +48,7 @@ export function useFundContract() {
     if (!client || !isMasterInitialized) return;
 
     const contract = new FundContract(
-      Address.parse("EQA0yRJDfhzWzhmuFtJm3XXApf5JYK5S_rawKNbxKTDYTtwo")
+      Address.parse("EQC_j3X1doR4CoPcA3p659Jo-CXbG8LqAdR5-3XOGElh-09v")
     );
 
     const result = client.open(contract) as OpenedContract<FundContract>;
@@ -87,16 +87,11 @@ export function useFundContract() {
 
         const op = cell.loadUint(32);
 
-        if (op === 260734629) {
+        //TOKEN TRANSFER INTERNAL CODE
+        if (op === 395134233) {
           const queryId = cell.loadUintBig(64);
           amount = cell.loadCoins();
-          const dest = cell.loadAddress();
-          const respDest = cell.loadAddress();
-          const customPayload = cell.loadBit() ? cell.loadRef() : null;
-          const forwardTonAmount = cell.loadCoins();
-          const forwardPayload = cell.asCell();
-          const isDonate = cell.loadBit();
-          itemSeqno = cell.loadRef().asSlice().loadIntBig(257);
+          itemSeqno = cell.loadIntBig(257);
 
           let existing = dict.get(itemSeqno);
 
@@ -107,12 +102,14 @@ export function useFundContract() {
             });
             // existing += amount;
           } else {
-            dict.set(itemSeqno, { total: amount, liked: false });
+            if (itemSeqno != 0n)
+              dict.set(itemSeqno, { total: amount, liked: false });
           }
 
           const trxSender = x.inMessage?.info.src?.toString();
           if (
             trxSender &&
+            senderJettonWalletAddress &&
             trxSender === senderJettonWalletAddress!.toString()
           ) {
             let likedItem = dict.get(itemSeqno);
@@ -122,38 +119,55 @@ export function useFundContract() {
       });
 
       if (dict.size != 0) {
-        for (const [key, value] of Object.entries(dict)) {
-          const item = data.find((x) => x.id.toString() == fromNano(key))!;
-          if (value.liked) {
-            likedArr.push(
-              new ItemData(
-                fundContract!.address,
-                item.description,
-                toNano(item.amountToHelp),
-                toNano(item.currentAmount),
-                item.title,
-                item.imageUrl,
-                toNano(key),
-                value.total,
-                true
-              )
-            );
+        data.map((x) => {
+          if (dict.has(toNano(x.id))) {
+            const item = dict.get(toNano(x.id))!;
+
+            if (item.liked) {
+              likedArr.push(
+                new ItemData(
+                  fundContract!.address,
+                  x.description,
+                  toNano(x.amountToHelp),
+                  toNano(x.currentAmount),
+                  x.title,
+                  x.imageUrl,
+                  toNano(x.id),
+                  item.total,
+                  true
+                )
+              );
+            } else {
+              availableArr.push(
+                new ItemData(
+                  fundContract!.address,
+                  x.description,
+                  toNano(x.amountToHelp),
+                  toNano(x.currentAmount),
+                  x.title,
+                  x.imageUrl,
+                  toNano(x.id),
+                  item.total,
+                  false
+                )
+              );
+            }
           } else {
             availableArr.push(
               new ItemData(
                 fundContract!.address,
-                item.description,
-                toNano(item.amountToHelp),
-                toNano(item.currentAmount),
-                item.title,
-                item.imageUrl,
-                toNano(key),
-                value.total,
+                x.description,
+                toNano(x.amountToHelp),
+                toNano(x.currentAmount),
+                x.title,
+                x.imageUrl,
+                toNano(x.id),
+                0n,
                 false
               )
             );
           }
-        }
+        });
       } else {
         data.map((x) => {
           availableArr.push(
@@ -190,7 +204,7 @@ export function useFundContract() {
     addresses: addresses,
     likedData: liked,
     availableData: available,
-    // fetchItems,
+    fetchItems,
     jettonWalletAddress,
     address: fundContract?.address,
   };

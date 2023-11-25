@@ -21,7 +21,7 @@ export interface IItemWrapperProps {
     amount: bigint,
     itemSeqno: bigint
   ) => Promise<void> | undefined;
-  // fetchItems: () => Promise<void>;
+  fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -34,7 +34,7 @@ export default function FundItemWrapper({
   senderJettonWalletBalance,
   itemSeqno,
   sendDonate,
-  // fetchItems,
+  fetchItems,
   setLoading,
 }: IItemWrapperProps) {
   const { connected } = useTonConnect();
@@ -123,22 +123,19 @@ export default function FundItemWrapper({
                   //TODO: if 10% is > than needed than calculate only needed amount
                   //TODO: if balance < MIN value then ask to send the remaining balance
                   //10% from total user's jetton balance
-
                   sendDonate(
                     destinationAddress,
                     senderJettonWalletBalance / BigInt(10),
                     itemSeqno
-                  );
+                  )?.then((_) => {
+                    setLoading(true);
+                    console.log("FETCH");
 
-                  // ?.then((_) => {
-                  //   setLoading(true);
-                  //   console.log("FETCH");
-
-                  //   fetchItems().then((_) => {
-                  //     console.log("inside fetch");
-                  //     setLoading(false);
-                  //   });
-                  // })
+                    fetchItems().then((_) => {
+                      console.log("inside fetch");
+                      setLoading(false);
+                    });
+                  });
                 }}
               >
                 <Typography color="white" fontSize="10px">

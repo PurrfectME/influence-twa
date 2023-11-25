@@ -8,11 +8,13 @@ import { Address, fromNano } from "ton-core";
 import { useMasterWallet } from "../../hooks/useMasterWallet";
 import { useNavigate } from "react-router-dom";
 import {
+  Alert,
   Avatar,
   Card,
   CircularProgress,
   Grid,
   Paper,
+  Snackbar,
   SvgIcon,
   createSvgIcon,
 } from "@mui/material";
@@ -35,6 +37,7 @@ export default function Home() {
     availableData,
     createItem,
     address: fundAddress,
+    fetchItems,
   } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -99,7 +102,7 @@ export default function Home() {
       {/* TODO: open connect modal manually
             TODO: https://github.com/ton-connect/sdk/tree/main/packages/ui#call-connect */}
       <>
-        <Grid container display={"flex"} flexDirection={"row"}>
+        <Grid container display={"flex"} flexDirection={"row"} mb={"10px"}>
           <TonConnectButton />
           {/* <button id="ton-connect-ultra"></button> */}
 
@@ -137,7 +140,15 @@ export default function Home() {
               </Card>
             </Grid>
           ) : (
-            <div>Connect wallet to see actual balances</div>
+            <Grid item>
+              <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                open={!connected}
+                // onClose={handleClose}
+                message="Connect wallet to donate"
+                // key={vertical + horizontal}
+              />
+            </Grid>
           )}
         </Grid>
         <FlexBoxRow>
@@ -166,7 +177,7 @@ export default function Home() {
           {!loading ? (
             <Items
               setLoading={setLoading}
-              // fetchItems={fetchItems}
+              fetchItems={fetchItems}
               sendDonate={sendDonate}
               senderJettonWalletBalance={
                 jettonWallet ? jettonWallet.balance : 0n
