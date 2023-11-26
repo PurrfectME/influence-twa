@@ -1,18 +1,8 @@
-import {
-  Address,
-  BitBuilder,
-  BitReader,
-  BitString,
-  Cell,
-  Dictionary,
-  OpenedContract,
-  Slice,
-} from "ton-core";
+import { Address, Dictionary, OpenedContract, Slice } from "ton-core";
 import MasterWallet from "../contracts/masterWallet";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useTonConnect } from "./useTonConnect";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { sha256_sync } from "ton-crypto";
 

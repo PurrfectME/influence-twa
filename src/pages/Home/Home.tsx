@@ -38,9 +38,10 @@ export default function Home() {
     createItem,
     address: fundAddress,
     fetchItems,
+    loading,
+    setLoading,
   } = useFundContract();
   const [tonBalance, setTonBalance] = useState<bigint>();
-  const [loading, setLoading] = useState<boolean>(true);
 
   const TonSymbol = (
     <svg
@@ -67,13 +68,15 @@ export default function Home() {
     // tonConnectUI.uiOptions = {
     //   buttonRootId: "ton-connect-ultra",
     // };
+    // setLoading(true);
+    console.log(likedData, availableData);
+    // setLoading(true);
 
-    if (likedData && availableData) {
-      console.log("LIKED", likedData);
-
-      console.log("availableData", availableData);
-      setLoading(false);
-    }
+    // if (likedData.length != 0 || availableData.length != 0) {
+    //   setLoading(false);
+    // } else {
+    //   setLoading(true);
+    // }
 
     async function getBalances() {
       const address = Address.parse(wallet!.account.address);
@@ -85,7 +88,7 @@ export default function Home() {
     if (client && wallet) {
       getBalances();
     }
-  }, [client, wallet, likedData, availableData]);
+  }, [client, wallet]);
 
   const nanoToFixed = (number: bigint) => {
     const num = fromNano(number);
@@ -109,7 +112,12 @@ export default function Home() {
           {connected ? (
             <Grid item ml={"20px"}>
               <Card
-                sx={{ paddingLeft: "20px", paddingRight: "20px" }}
+                sx={{
+                  display: "flex",
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                  height: "36px",
+                }}
                 elevation={3}
               >
                 <Grid
@@ -125,7 +133,7 @@ export default function Home() {
                     component={createSvgIcon(TonSymbol, "ASD")}
                     inheritViewBox
                   />
-                  <Grid item ml={"10px"}>
+                  <Grid item ml={"10px"} mr={"5px"}>
                     <h2>
                       {jettonWallet ? nanoToFixed(jettonWallet.balance) : 0}
                     </h2>
@@ -151,19 +159,11 @@ export default function Home() {
             </Grid>
           )}
         </Grid>
-        <FlexBoxRow>
+        {/* <FlexBoxRow>
           <Button onClick={createFund}>Создать фонд</Button>
           <Button onClick={createItem}>Создать заявку</Button>
-          <Button
-            onClick={() => {
-              if (jettonWallet) {
-                sendDonate(fundAddress!, jettonWallet.balance / BigInt(10), 0n);
-              }
-            }}
-          >
-            Лайк
-          </Button>
-        </FlexBoxRow>
+          
+        </FlexBoxRow> */}
 
         {connected ? (
           <Grid item mt={"20px"}>

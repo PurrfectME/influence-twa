@@ -33,16 +33,16 @@ export function useFundContract() {
   const {
     getJettonWalletAddress,
     isInitialized: isMasterInitialized,
-    jettonWalletAddress: senderJettonWalletAddress,
+    // jettonWalletAddress: senderJettonWalletAddress,
   } = useMasterWallet();
-  const [liked, setLiked] = useState<ItemData[]>();
-  const [available, setAvailable] = useState<ItemData[]>();
+  const [liked, setLiked] = useState<ItemData[]>([]);
+  const [available, setAvailable] = useState<ItemData[]>([]);
   const [addresses, setAddresses] = useState<
     Dictionary<bigint, Address> | undefined
   >();
   const [fundData, setFundData] = useState<FundData>();
-  const [items, setItems] = useState<ItemData[]>();
   const [jettonWalletAddress, setJettonWalletAddress] = useState<Address>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fundContract = useAsyncInitialize(async () => {
     if (!client || !isMasterInitialized) return;
@@ -63,12 +63,47 @@ export function useFundContract() {
   }, [client, isMasterInitialized]);
 
   async function fetchItems() {
+    setLoading(true);
+    setAvailable([]);
+    setLiked([]);
     let likedArr: ItemData[] = [];
     let availableArr: ItemData[] = [];
+
+    // if (!sender.address) {
+    //   data.map((x) => {
+    //     availableArr.push(
+    //       new ItemData(
+    //         fundContract!.address,
+    //         x.description,
+    //         toNano(x.amountToHelp),
+    //         toNano(x.currentAmount),
+    //         x.title,
+    //         x.imageUrl,
+    //         toNano(x.id),
+    //         0n,
+    //         false
+    //       )
+    //     );
+    //   });
+
+    //   setLiked([]);
+    //   setAvailable(availableArr);
+
+    //   return;
+    // }
 
     const fundJettonWalletAddress = await getJettonWalletAddress(
       fundContract!.address
     );
+    console.log("DEAD", sender.address);
+    let senderJettonWalletAddress: Address | undefined;
+
+    if (sender.address) {
+      console.log("INSIDE");
+
+      senderJettonWalletAddress = await getJettonWalletAddress(sender.address!);
+    }
+
     if (fundJettonWalletAddress) {
       setJettonWalletAddress(fundJettonWalletAddress);
 
@@ -123,7 +158,7 @@ export function useFundContract() {
           if (dict.has(toNano(x.id))) {
             const item = dict.get(toNano(x.id))!;
 
-            if (item.liked) {
+            if (item.liked && sender.address != undefined) {
               likedArr.push(
                 new ItemData(
                   fundContract!.address,
@@ -188,6 +223,7 @@ export function useFundContract() {
 
       setLiked(likedArr);
       setAvailable(availableArr);
+      setLoading(false);
     }
   }
 
@@ -195,7 +231,7 @@ export function useFundContract() {
     if (!fundContract) return;
 
     fetchItems();
-  }, [fundContract]);
+  }, [fundContract, connected]);
 
   return {
     data: fundData,
@@ -207,6 +243,8 @@ export function useFundContract() {
     fetchItems,
     jettonWalletAddress,
     address: fundContract?.address,
+    loading,
+    setLoading,
   };
 }
 

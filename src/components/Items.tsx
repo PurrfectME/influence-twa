@@ -33,7 +33,11 @@ export default function Items({
         flexDirection={"column"}
         justifyContent={"start"}
       >
-        <h2>Available</h2>
+        <h2>
+          {availableData.length != 0
+            ? "Available"
+            : "No Available Applications"}
+        </h2>
         <Grid
           container
           display={"flex"}
@@ -67,7 +71,7 @@ export default function Items({
         justifyContent={"start"}
         mt={"2vh"}
       >
-        <h2>Liked</h2>
+        <h2>{likedData.length != 0 ? "Liked" : "No Liked Applications"}</h2>
         <Grid
           container
           display={"flex"}
