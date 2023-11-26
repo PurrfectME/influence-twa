@@ -131,10 +131,10 @@ export function FundItem({ address }: any) {
 
                     //TODO: if 10% is > than needed than calculate only needed amount
                     //10% from total user's jetton balance
-                    sendDonate(
-                      address as Address,
-                      userJettonWallet!.balance / BigInt(10)
-                    );
+                    // sendDonate(
+                    //   address as Address,
+                    //   userJettonWallet!.balance / BigInt(10)
+                    // );
                   }}
                 >
                   <Typography color="white" fontSize="10px">
@@ -167,10 +167,10 @@ export function FundItem({ address }: any) {
 
                   //TODO: if 10% is > than needed than calculate only needed amount
                   //10% from total user's jetton balance
-                  sendDonate(
-                    address as Address,
-                    userJettonWallet!.balance / BigInt(10)
-                  );
+                  // sendDonate(
+                  //   address as Address,
+                  //   userJettonWallet!.balance / BigInt(10)
+                  // );
                 }}
               >
                 <Typography color="white" fontSize="10px">

@@ -41,7 +41,11 @@ export default function useJettonWallet(owner: Address | undefined) {
   return {
     data: walletData,
     address: jettonWalletContract?.address,
-    sendDonate: async (destination: Address, amount: bigint, itemSeqno: bigint) => {
+    sendDonate: async (
+      destination: Address,
+      amount: bigint,
+      itemSeqno: bigint
+    ) => {
       const lastTrx = await client?.getTransactions(sender.address!, {
         limit: 1,
       });
@@ -51,9 +55,12 @@ export default function useJettonWallet(owner: Address | undefined) {
         lastHash = last.stateUpdate.newHash.toString();
       }
 
-      console.log('dest', destination.toString());
-      console.log('seqno', itemSeqno);
-      await jettonWalletContract?.sendDonate(sender, destination, amount, itemSeqno);
+      await jettonWalletContract?.sendDonate(
+        sender,
+        destination,
+        amount,
+        itemSeqno
+      );
 
       let txHash = lastHash;
       while (txHash == lastHash) {
