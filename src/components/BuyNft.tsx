@@ -1,17 +1,14 @@
 import { useState } from "react";
-import styled from "styled-components";
-import { Address, toNano } from "ton";
 import { useTonConnect } from "../hooks/useTonConnect";
 import { Card, FlexBoxCol, FlexBoxRow, Button, Input } from "./styled/styled";
-import { IMyProps } from "../pages/Home/Home";
 import { useTonWallet } from "@tonconnect/ui-react";
 
 interface INftProps {
   buyNft: (amount: string) => Promise<void> | undefined;
 }
 
-export function BuyNft(props: INftProps) {
-  const { sender, connected } = useTonConnect();
+export function BuyNft({ buyNft }: INftProps) {
+  const { connected } = useTonConnect();
   const wallet = useTonWallet();
 
   const [tonAmount, setTonAmount] = useState("0.01");
@@ -35,7 +32,7 @@ export function BuyNft(props: INftProps) {
           style={{ marginTop: 18 }}
           onClick={() => {
             if (wallet) {
-              props.buyNft(tonAmount);
+              buyNft(tonAmount);
             }
           }}
         >

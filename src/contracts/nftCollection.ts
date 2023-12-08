@@ -30,7 +30,11 @@ export default class NftCollection implements Contract {
       .storeUint(608941821, 32)
       .storeCoins(toNano(amount))
       .storeAddress(sender.address)
-      .storeRef(buildOnchainMetadata(metadata))
+      .storeRef(
+        createOffchainContent(
+          "https://raw.githubusercontent.com/PurrfectME/influence-twa/3470f7e75a0d19032b32efd39158db678aa56ae1/src/items/meta.json"
+        )
+      )
       .endCell();
 
     await provider.internal(sender, {
@@ -39,59 +43,17 @@ export default class NftCollection implements Contract {
     });
   }
 
-  constructor(readonly address: Address) {}
-}
+  async sendLike(provider: ContractProvider, sender: Sender, itemId: bigint) {
+    const body = beginCell()
+      .storeUint(877159261, 32)
+      .storeUint(itemId, 256)
+      .endCell();
 
-const OFCHAIN_CONTENT_PREFIX = 0x01;
-const SNAKE_PREFIX = 0x00;
-const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
-
-function bufferToChunks(buff: Buffer, chunkSize: number) {
-  let chunks: Buffer[] = [];
-  while (buff.byteLength > 0) {
-    chunks.push(buff.slice(0, chunkSize));
-    buff = buff.slice(chunkSize);
+    await provider.internal(sender, {
+      value: toNano("0.02"),
+      body,
+    });
   }
-  return chunks;
-}
 
-function makeSnakeCell(data: Buffer) {
-  let chunks = bufferToChunks(data, 127);
-  const b = chunks.reduceRight((curCell, chunk, index) => {
-    if (index === 0) {
-      curCell.storeInt(SNAKE_PREFIX, 8);
-    }
-    curCell.storeBuffer(chunk);
-    if (index > 0) {
-      const cell = curCell.endCell();
-      return beginCell().storeRef(cell);
-    } else {
-      return curCell;
-    }
-  }, beginCell());
-  return b.endCell();
-}
-
-const toKey = (key: string) => {
-  return BigInt(`0x${sha256_sync(key).toString("hex")}`);
-};
-
-function buildOnchainMetadata(data: {
-  name: string;
-  description: string;
-  image: string;
-  content_url: string;
-}): Cell {
-  let dict = Dictionary.empty(
-    Dictionary.Keys.BigUint(256),
-    Dictionary.Values.Cell()
-  );
-  Object.entries(data).forEach(([key, value]) => {
-    dict.set(toKey(key), makeSnakeCell(Buffer.from(value, "utf8")));
-  });
-
-  return beginCell()
-    .storeInt(OFCHAIN_CONTENT_PREFIX, 8)
-    .storeDict(dict)
-    .endCell();
+  constructor(readonly address: Address) {}
 }

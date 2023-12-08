@@ -22,5 +22,13 @@
     "currentAmount": 0,
     "amountToHelp": 20,
     "imageUrl": "IMAGE"
+  },
+  {
+    "id": 4,
+    "title": "TITLE",
+    "description": "DESCRIPTION",
+    "currentAmount": 0,
+    "amountToHelp": 20,
+    "imageUrl": "IMAGE"
   }
 ]

@@ -6,6 +6,7 @@ import { useTonConnect } from "../hooks/useTonConnect";
 import { useTonConnectUI } from "@tonconnect/ui-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
+import useNftCollection from "../hooks/useNftCollection";
 
 export interface IItemWrapperProps {
   title: String;
@@ -41,6 +42,7 @@ export default function FundItemWrapper({
   const [tonConnectUI] = useTonConnectUI();
   const [dialogMessage, setDialogMessage] = useState<String>();
   const [open, setOpen] = useState(false);
+  const { sendLike } = useNftCollection();
   const handleOpen = (message: String) => {
     setDialogMessage(message);
     setOpen(true);
@@ -120,22 +122,24 @@ export default function FundItemWrapper({
                     return;
                   }
 
+                  sendLike(4n);
+
                   //TODO: if 10% is > than needed than calculate only needed amount
                   //TODO: if balance < MIN value then ask to send the remaining balance
                   //10% from total user's jetton balance
-                  sendDonate(
-                    destinationAddress,
-                    senderJettonWalletBalance / BigInt(10),
-                    itemSeqno
-                  )?.then((_) => {
-                    setLoading(true);
-                    console.log("FETCH");
+                  // sendDonate(
+                  //   destinationAddress,
+                  //   senderJettonWalletBalance / BigInt(10),
+                  //   itemSeqno
+                  // )?.then((_) => {
+                  //   setLoading(true);
+                  //   console.log("FETCH");
 
-                    fetchItems().then((_) => {
-                      console.log("inside fetch");
-                      setLoading(false);
-                    });
-                  });
+                  //   fetchItems().then((_) => {
+                  //     console.log("inside fetch");
+                  //     setLoading(false);
+                  //   });
+                  // });
                 }}
               >
                 <Typography color="white" fontSize="10px">

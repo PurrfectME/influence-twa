@@ -150,13 +150,13 @@ export default function Home() {
           
         </FlexBoxRow> */}
 
-        {connected ? (
+        {/* {connected ? (
           <Grid item mt={"20px"}>
             <TransferTon mintTokens={mintTokens} />
           </Grid>
         ) : (
           <></>
-        )}
+        )} */}
 
         <Grid item mt={"20px"}>
           <BuyNft buyNft={buyNft} />

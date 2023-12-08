@@ -69,38 +69,12 @@ export function useFundContract() {
     let likedArr: ItemData[] = [];
     let availableArr: ItemData[] = [];
 
-    // if (!sender.address) {
-    //   data.map((x) => {
-    //     availableArr.push(
-    //       new ItemData(
-    //         fundContract!.address,
-    //         x.description,
-    //         toNano(x.amountToHelp),
-    //         toNano(x.currentAmount),
-    //         x.title,
-    //         x.imageUrl,
-    //         toNano(x.id),
-    //         0n,
-    //         false
-    //       )
-    //     );
-    //   });
-
-    //   setLiked([]);
-    //   setAvailable(availableArr);
-
-    //   return;
-    // }
-
     const fundJettonWalletAddress = await getJettonWalletAddress(
       fundContract!.address
     );
-    console.log("DEAD", sender.address);
     let senderJettonWalletAddress: Address | undefined;
 
     if (sender.address) {
-      console.log("INSIDE");
-
       senderJettonWalletAddress = await getJettonWalletAddress(sender.address!);
     }
 

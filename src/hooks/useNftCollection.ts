@@ -4,7 +4,7 @@ import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
 import { useTonConnect } from "./useTonConnect";
 
-const addr = "EQB9y04L6aCcbfJCCyfB48HULTp09WWhpFL3JED-iE3H-mrh";
+const addr = "EQDrm5ietS0bg5iE7Gd-ssTCC0v5-KbE5uqbVSbOgVLgBKsR";
 
 export default function useNftCollection() {
   const { sender } = useTonConnect();
@@ -22,5 +22,6 @@ export default function useNftCollection() {
 
   return {
     buyNft: (amount: string) => collectionContract?.sendBuyNft(sender, amount),
+    sendLike: (itemId: bigint) => collectionContract?.sendLike(sender, itemId),
   };
 }
