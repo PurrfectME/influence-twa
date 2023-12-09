@@ -1,14 +1,9 @@
 import "../../App.css";
 import { TonConnectButton, useTonWallet } from "@tonconnect/ui-react";
-import { TransferTon } from "../../components/TransferTon";
 import { useTonConnect } from "../../hooks/useTonConnect";
 import "@twa-dev/sdk";
 import { Address, fromNano } from "ton-core";
-import { useMasterWallet } from "../../hooks/useMasterWallet";
-import { useNavigate } from "react-router-dom";
 import {
-  Avatar,
-  Button,
   Card,
   CircularProgress,
   Grid,
@@ -19,10 +14,10 @@ import {
 import { useFundContract } from "../../hooks/useFundContract";
 import { useEffect, useState } from "react";
 import { useTonClient } from "../../hooks/useTonClient";
-import useJettonWallet from "../../hooks/useJettonWallet";
 import Items from "../../components/Items";
 import useNftCollection from "../../hooks/useNftCollection";
 import { BuyNft } from "../../components/BuyNft";
+import { useItems } from "../../hooks/useItems";
 
 const TonSymbol = (
   <svg
@@ -45,22 +40,20 @@ const TonSymbol = (
 
 export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
-  const { sender, connected, tonConnectUI } = useTonConnect();
+  const { connected } = useTonConnect();
   const wallet = useTonWallet();
   const { client } = useTonClient();
-  const { createFund, mintTokens, jettonData } = useMasterWallet();
   const {
-    likedData,
-    availableData,
     createItem,
     address: fundAddress,
     fetchItems,
     loading,
     setLoading,
   } = useFundContract();
+
   const [tonBalance, setTonBalance] = useState<bigint>();
-  const { data: jettonWallet, sendDonate } = useJettonWallet(sender.address);
   const { buyNft } = useNftCollection();
+  const { liked, available } = useItems();
 
   useEffect(() => {
     async function getBalances() {
@@ -118,17 +111,6 @@ export default function Home() {
                     component={createSvgIcon(TonSymbol, "ASD")}
                     inheritViewBox
                   />
-                  <Grid item ml={"10px"} mr={"5px"}>
-                    <h2>
-                      {jettonWallet ? nanoToFixed(jettonWallet.balance) : 0}
-                    </h2>
-                  </Grid>
-                  <Grid>
-                    <Avatar
-                      sx={{ width: 25, height: 25 }}
-                      src={jettonData ? `${jettonData.image}` : ""}
-                    />
-                  </Grid>
                 </Grid>
               </Card>
             </Grid>
@@ -144,19 +126,6 @@ export default function Home() {
             </Grid>
           )}
         </Grid>
-        {/* <FlexBoxRow>
-          <Button onClick={createFund}>Создать фонд</Button>
-          <Button onClick={createItem}>Создать заявку</Button>
-          
-        </FlexBoxRow> */}
-
-        {/* {connected ? (
-          <Grid item mt={"20px"}>
-            <TransferTon mintTokens={mintTokens} />
-          </Grid>
-        ) : (
-          <></>
-        )} */}
 
         <Grid item mt={"20px"}>
           <BuyNft buyNft={buyNft} />
@@ -167,12 +136,8 @@ export default function Home() {
             <Items
               setLoading={setLoading}
               fetchItems={fetchItems}
-              sendDonate={sendDonate}
-              senderJettonWalletBalance={
-                jettonWallet ? jettonWallet.balance : 0n
-              }
-              likedData={likedData ? likedData : []}
-              availableData={availableData ? availableData : []}
+              likedData={liked}
+              availableData={available}
             />
           ) : (
             <Grid

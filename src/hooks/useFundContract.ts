@@ -135,44 +135,44 @@ export function useFundContract() {
             if (item.liked && sender.address != undefined) {
               likedArr.push(
                 new ItemData(
-                  fundContract!.address,
+                  // fundContract!.address,
                   x.description,
                   toNano(x.amountToHelp),
                   toNano(x.currentAmount),
                   x.title,
                   x.imageUrl,
-                  toNano(x.id),
-                  item.total,
-                  true
+                  toNano(x.id)
+                  // item.total,
+                  // true
                 )
               );
             } else {
               availableArr.push(
                 new ItemData(
-                  fundContract!.address,
+                  // fundContract!.address,
                   x.description,
                   toNano(x.amountToHelp),
                   toNano(x.currentAmount),
                   x.title,
                   x.imageUrl,
-                  toNano(x.id),
-                  item.total,
-                  false
+                  toNano(x.id)
+                  // item.total,
+                  // false
                 )
               );
             }
           } else {
             availableArr.push(
               new ItemData(
-                fundContract!.address,
+                // fundContract!.address,
                 x.description,
                 toNano(x.amountToHelp),
                 toNano(x.currentAmount),
                 x.title,
                 x.imageUrl,
-                toNano(x.id),
-                0n,
-                false
+                toNano(x.id)
+                // 0n,
+                // false
               )
             );
           }
@@ -181,15 +181,15 @@ export function useFundContract() {
         data.map((x) => {
           availableArr.push(
             new ItemData(
-              fundContract!.address,
+              // fundContract!.address,
               x.description,
               toNano(x.amountToHelp),
               toNano(x.currentAmount),
               x.title,
               x.imageUrl,
-              toNano(x.id),
-              0n,
-              false
+              toNano(x.id)
+              // 0n,
+              // false
             )
           );
         });

@@ -11,17 +11,12 @@ import useNftCollection from "../hooks/useNftCollection";
 export interface IItemWrapperProps {
   title: String;
   description: String;
-  balance: bigint;
+  // balance: bigint;
   liked: boolean;
-  destinationAddress: Address;
+  // destinationAddress: Address;
+  currentAmount: bigint;
   amountToHelp: bigint;
-  senderJettonWalletBalance: bigint;
   itemSeqno: bigint;
-  sendDonate: (
-    destination: Address,
-    amount: bigint,
-    itemSeqno: bigint
-  ) => Promise<void> | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -29,12 +24,9 @@ export interface IItemWrapperProps {
 export default function FundItemWrapper({
   title,
   description,
-  balance: currentAmount,
-  liked,
-  destinationAddress,
-  senderJettonWalletBalance,
+  currentAmount,
   itemSeqno,
-  sendDonate,
+  liked,
   fetchItems,
   setLoading,
 }: IItemWrapperProps) {
@@ -117,29 +109,7 @@ export default function FundItemWrapper({
                     return;
                   }
 
-                  if (senderJettonWalletBalance == BigInt(0)) {
-                    handleOpen("You don't have any INF tokens. Buy some");
-                    return;
-                  }
-
-                  sendLike(4n);
-
-                  //TODO: if 10% is > than needed than calculate only needed amount
-                  //TODO: if balance < MIN value then ask to send the remaining balance
-                  //10% from total user's jetton balance
-                  // sendDonate(
-                  //   destinationAddress,
-                  //   senderJettonWalletBalance / BigInt(10),
-                  //   itemSeqno
-                  // )?.then((_) => {
-                  //   setLoading(true);
-                  //   console.log("FETCH");
-
-                  //   fetchItems().then((_) => {
-                  //     console.log("inside fetch");
-                  //     setLoading(false);
-                  //   });
-                  // });
+                  sendLike(itemSeqno);
                 }}
               >
                 <Typography color="white" fontSize="10px">

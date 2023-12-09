@@ -1,7 +1,5 @@
-import { Address } from "ton-core";
-
 export class ItemData {
-  destinationAddress: Address;
+  // destinationAddress: Address;
   description: String;
   amountToHelp: bigint;
   currentAmount: bigint;
@@ -9,22 +7,22 @@ export class ItemData {
   // deployTime: bigint;
   imageUrl: String;
   seqno: bigint;
-  balance: bigint;
-  liked: boolean;
+  // balance: bigint;
+  // liked: boolean;
 
   constructor(
-    destinationAddress: Address,
+    // destinationAddress: Address,
     description: String,
     amountToHelp: bigint,
     currentAmount: bigint,
     title: String,
     // deployTime: bigint,
     imageUrl: String,
-    seqno: bigint,
-    balance: bigint,
-    liked: boolean
+    seqno: bigint
+    // balance: bigint,
+    // liked: boolean
   ) {
-    this.destinationAddress = destinationAddress;
+    // this.destinationAddress = destinationAddress;
     this.description = description;
     this.amountToHelp = amountToHelp;
     this.currentAmount = currentAmount;
@@ -32,7 +30,7 @@ export class ItemData {
     // this.deployTime = deployTime;
     this.imageUrl = imageUrl;
     this.seqno = seqno;
-    this.balance = balance;
-    this.liked = liked;
+    // this.balance = balance;
+    // this.liked = liked;
   }
 }

@@ -1,15 +1,11 @@
 import {
   Address,
-  Cell,
   Contract,
   ContractProvider,
-  Dictionary,
   Sender,
   beginCell,
   toNano,
 } from "ton-core";
-import { Buffer } from "buffer";
-import { sha256_sync } from "ton-crypto";
 const metadata = {
   name: "E BUDDY",
   description: "LIGHTWEIGHT",

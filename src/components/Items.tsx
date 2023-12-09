@@ -1,18 +1,11 @@
 import { ItemData } from "../models/ItemData";
 import { Grid } from "@mui/material";
 import FundItemWrapper from "./FundItemWrapper";
-import { Address } from "ton-core";
 import { Dispatch, SetStateAction } from "react";
 
 export interface IItemsProps {
   likedData: ItemData[];
   availableData: ItemData[];
-  senderJettonWalletBalance: bigint;
-  sendDonate: (
-    destination: Address,
-    amount: bigint,
-    itemSeqno: bigint
-  ) => Promise<void> | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -20,8 +13,6 @@ export interface IItemsProps {
 export default function Items({
   likedData,
   availableData,
-  senderJettonWalletBalance,
-  sendDonate,
   fetchItems,
   setLoading,
 }: IItemsProps) {
@@ -48,15 +39,12 @@ export default function Items({
           {availableData.map((x, i) => (
             <FundItemWrapper
               key={i}
-              senderJettonWalletBalance={senderJettonWalletBalance}
-              destinationAddress={x.destinationAddress}
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}
-              balance={x.balance}
-              liked={x.liked}
+              currentAmount={x.currentAmount}
+              liked={false}
               itemSeqno={x.seqno}
-              sendDonate={sendDonate}
               fetchItems={fetchItems}
               setLoading={setLoading}
             />
@@ -82,15 +70,12 @@ export default function Items({
           {likedData.map((x, i) => (
             <FundItemWrapper
               key={i}
-              senderJettonWalletBalance={senderJettonWalletBalance}
-              destinationAddress={x.destinationAddress}
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}
-              balance={x.balance}
-              liked={x.liked}
+              currentAmount={x.currentAmount}
+              liked={true}
               itemSeqno={x.seqno}
-              sendDonate={sendDonate}
               fetchItems={fetchItems}
               setLoading={setLoading}
             />
