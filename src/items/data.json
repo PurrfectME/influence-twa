@@ -3,32 +3,40 @@
     "id": 1,
     "title": "TITLE",
     "description": "DESCRIPTION",
-    "currentAmount": 0,
+    "tonAmount": 0,
     "amountToHelp": 20,
-    "imageUrl": "IMAGE"
+    "imageUrl": "IMAGE",
+    "likes": 25,
+    "currency": "USDT"
   },
   {
     "id": 2,
     "title": "TITLE",
     "description": "DESCRIPTION",
-    "currentAmount": 0,
+    "tonAmount": 0,
     "amountToHelp": 20,
-    "imageUrl": "IMAGE"
+    "imageUrl": "IMAGE",
+    "likes": 25,
+    "currency": "USDT"
   },
   {
     "id": 3,
     "title": "TITLE",
     "description": "DESCRIPTION",
-    "currentAmount": 0,
+    "tonAmount": 0,
     "amountToHelp": 20,
-    "imageUrl": "IMAGE"
+    "imageUrl": "IMAGE",
+    "likes": 25,
+    "currency": "USDT"
   },
   {
     "id": 4,
     "title": "TITLE",
     "description": "DESCRIPTION",
-    "currentAmount": 0,
+    "tonAmount": 0,
     "amountToHelp": 20,
-    "imageUrl": "IMAGE"
+    "imageUrl": "IMAGE",
+    "likes": 25,
+    "currency": "USDT"
   }
 ]

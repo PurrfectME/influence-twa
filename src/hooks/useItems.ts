@@ -17,7 +17,7 @@ export function useItems() {
         return new ItemData(
           x.description,
           toNano(x.amountToHelp),
-          toNano(x.currentAmount),
+          toNano(x.tonAmount),
           x.title,
           x.imageUrl,
           toNano(x.id)

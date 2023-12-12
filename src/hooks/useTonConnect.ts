@@ -5,7 +5,6 @@ import {
   useTonConnectUI,
   useTonWallet,
 } from "@tonconnect/ui-react";
-import { Buffer } from "buffer";
 
 export function useTonConnect(): {
   sender: Sender;

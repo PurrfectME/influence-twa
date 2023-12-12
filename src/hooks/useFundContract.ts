@@ -138,7 +138,7 @@ export function useFundContract() {
                   // fundContract!.address,
                   x.description,
                   toNano(x.amountToHelp),
-                  toNano(x.currentAmount),
+                  toNano(x.tonAmount),
                   x.title,
                   x.imageUrl,
                   toNano(x.id)
@@ -152,7 +152,7 @@ export function useFundContract() {
                   // fundContract!.address,
                   x.description,
                   toNano(x.amountToHelp),
-                  toNano(x.currentAmount),
+                  toNano(x.tonAmount),
                   x.title,
                   x.imageUrl,
                   toNano(x.id)
@@ -167,7 +167,7 @@ export function useFundContract() {
                 // fundContract!.address,
                 x.description,
                 toNano(x.amountToHelp),
-                toNano(x.currentAmount),
+                toNano(x.tonAmount),
                 x.title,
                 x.imageUrl,
                 toNano(x.id)
@@ -184,7 +184,7 @@ export function useFundContract() {
               // fundContract!.address,
               x.description,
               toNano(x.amountToHelp),
-              toNano(x.currentAmount),
+              toNano(x.tonAmount),
               x.title,
               x.imageUrl,
               toNano(x.id)

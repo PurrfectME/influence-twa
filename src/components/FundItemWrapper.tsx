@@ -11,9 +11,7 @@ import useNftCollection from "../hooks/useNftCollection";
 export interface IItemWrapperProps {
   title: String;
   description: String;
-  // balance: bigint;
   liked: boolean;
-  // destinationAddress: Address;
   currentAmount: bigint;
   amountToHelp: bigint;
   itemSeqno: bigint;

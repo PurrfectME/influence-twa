@@ -18,6 +18,8 @@ import Items from "../../components/Items";
 import useNftCollection from "../../hooks/useNftCollection";
 import { BuyNft } from "../../components/BuyNft";
 import { useItems } from "../../hooks/useItems";
+import useNftItem from "../../hooks/useNftItem";
+import { useTonApiClient } from "../../hooks/useTonApi";
 
 const TonSymbol = (
   <svg
@@ -42,6 +44,10 @@ export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
   const { connected } = useTonConnect();
   const wallet = useTonWallet();
+  // const { nfts } = useTonApiClient(wallet?.account.address);
+  // useNftCollection();
+  useNftItem();
+
   const { client } = useTonClient();
   const {
     createItem,
@@ -54,6 +60,7 @@ export default function Home() {
   const [tonBalance, setTonBalance] = useState<bigint>();
   const { buyNft } = useNftCollection();
   const { liked, available } = useItems();
+  const [showInsufficientAmount, setShowInsufficientAmount] = useState(false);
 
   useEffect(() => {
     async function getBalances() {
@@ -128,7 +135,10 @@ export default function Home() {
         </Grid>
 
         <Grid item mt={"20px"}>
-          <BuyNft buyNft={buyNft} />
+          <BuyNft
+            setShowInsufficientAmount={setShowInsufficientAmount}
+            buyNft={buyNft}
+          />
         </Grid>
 
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
@@ -151,6 +161,15 @@ export default function Home() {
           )}
         </Grid>
       </>
+      <Grid item>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={showInsufficientAmount}
+          // onClose={handleClose}
+          message="Minimum amount for NFT is 0.07 TON"
+          // key={vertical + horizontal}
+        />
+      </Grid>
     </Grid>
   );
 }
