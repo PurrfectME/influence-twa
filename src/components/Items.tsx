@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction } from "react";
 export interface IItemsProps {
   likedData: ItemData[];
   availableData: ItemData[];
+  nftsIndex: number[];
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -13,6 +14,7 @@ export interface IItemsProps {
 export default function Items({
   likedData,
   availableData,
+  nftsIndex,
   fetchItems,
   setLoading,
 }: IItemsProps) {
@@ -39,6 +41,7 @@ export default function Items({
           {availableData.map((x, i) => (
             <FundItemWrapper
               key={i}
+              nftsIndex={nftsIndex}
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}
@@ -70,6 +73,7 @@ export default function Items({
           {likedData.map((x, i) => (
             <FundItemWrapper
               key={i}
+              nftsIndex={undefined}
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}

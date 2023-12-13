@@ -24,7 +24,9 @@ export function useItems() {
         );
       })
     );
+
+    setLoading(false);
   }, []);
 
-  return { available, liked };
+  return { available, liked, loading, setLoading };
 }

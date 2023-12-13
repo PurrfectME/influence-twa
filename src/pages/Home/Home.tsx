@@ -46,20 +46,20 @@ export default function Home() {
   const wallet = useTonWallet();
   // const { nfts } = useTonApiClient(wallet?.account.address);
   // useNftCollection();
-  useNftItem();
+  const { nftsIndex } = useNftItem();
 
   const { client } = useTonClient();
-  const {
-    createItem,
-    address: fundAddress,
-    fetchItems,
-    loading,
-    setLoading,
-  } = useFundContract();
+  // const {
+  //   createItem,
+  //   address: fundAddress,
+  //   fetchItems,
+  //   loading,
+  //   setLoading,
+  // } = useFundContract();
 
   const [tonBalance, setTonBalance] = useState<bigint>();
   const { buyNft } = useNftCollection();
-  const { liked, available } = useItems();
+  const { liked, available, loading, setLoading } = useItems();
   const [showInsufficientAmount, setShowInsufficientAmount] = useState(false);
 
   useEffect(() => {
@@ -144,8 +144,9 @@ export default function Home() {
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
           {!loading ? (
             <Items
+              nftsIndex={nftsIndex}
               setLoading={setLoading}
-              fetchItems={fetchItems}
+              fetchItems={() => new Promise((r) => r)}
               likedData={liked}
               availableData={available}
             />

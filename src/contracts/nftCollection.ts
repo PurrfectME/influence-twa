@@ -39,7 +39,12 @@ export default class NftCollection implements Contract {
     });
   }
 
-  async sendLike(provider: ContractProvider, sender: Sender, itemId: bigint) {
+  async sendLike(
+    provider: ContractProvider,
+    sender: Sender,
+    itemId: bigint,
+    nftIndex: number
+  ) {
     //я на фронте проверяю лайкнул ли чел завяку
 
     //case 1 (1 NFT)
@@ -71,8 +76,9 @@ export default class NftCollection implements Contract {
     //TODO: если у нас осталось больше 15к ТОН, 10001 отправляем на адрес валидатора(адрес валидатора, кол-ва тона, кол-во тона на стейкинг в конфиге установить)
 
     const body = beginCell()
-      .storeUint(877159261, 32)
+      .storeUint(798965746, 32)
       .storeUint(itemId, 256)
+      .storeUint(nftIndex, 256)
       .endCell();
 
     await provider.internal(sender, {

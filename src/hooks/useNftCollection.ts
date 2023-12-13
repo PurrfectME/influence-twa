@@ -9,7 +9,7 @@ import { useTonApiClient } from "./useTonApi";
 import NftItem from "../contracts/nftItem";
 
 export const COLLECTION_ADDRESS =
-  "EQDNpF3GPupIQ78wLgP-zhYKj92GTVJuwuxPtyH-OMPy0Gi-";
+  "EQBrJuYgDOi5LEFcDln-MgE5eg4FHFw-vK06LkE3uZ_tZ8at";
 
 export default function useNftCollection() {
   const { sender } = useTonConnect();
@@ -29,6 +29,7 @@ export default function useNftCollection() {
 
   return {
     buyNft: (amount: string) => collectionContract?.sendBuyNft(sender, amount),
-    sendLike: (itemId: bigint) => collectionContract?.sendLike(sender, itemId),
+    sendLike: (itemId: bigint, nftIndex: number) =>
+      collectionContract?.sendLike(sender, itemId, nftIndex),
   };
 }

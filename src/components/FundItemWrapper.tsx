@@ -15,6 +15,7 @@ export interface IItemWrapperProps {
   currentAmount: bigint;
   amountToHelp: bigint;
   itemSeqno: bigint;
+  nftsIndex: number[] | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -25,6 +26,7 @@ export default function FundItemWrapper({
   currentAmount,
   itemSeqno,
   liked,
+  nftsIndex,
   fetchItems,
   setLoading,
 }: IItemWrapperProps) {
@@ -106,8 +108,7 @@ export default function FundItemWrapper({
                     );
                     return;
                   }
-
-                  sendLike(itemSeqno);
+                  sendLike(itemSeqno, nftsIndex![0]);
                 }}
               >
                 <Typography color="white" fontSize="10px">

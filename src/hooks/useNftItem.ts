@@ -6,14 +6,16 @@ import { useTonConnect } from "./useTonConnect";
 import { useTonApiClient } from "./useTonApi";
 import { useTonWallet } from "@tonconnect/ui-react";
 import { COLLECTION_ADDRESS } from "./useNftCollection";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function useNftItem() {
+  const likePrefix = 798965746;
   const nftDeployPrefix = 608941821;
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const wallet = useTonWallet();
   const { client: tonApiClient } = useTonApiClient();
+  const [nftsIndex, setNftsIndex] = useState<number[]>([]);
 
   const itemContract = useAsyncInitialize(async () => {
     if (!client || !sender.address) return;
@@ -64,6 +66,34 @@ export default function useNftItem() {
         //если нфт 2 и более то два реквеста с лайком, но в модели поле likes увеличить на 1
       }
 
+      setNftsIndex(validNfts);
+
+      const transactions = await client!.getTransactions(
+        Address.parse(COLLECTION_ADDRESS),
+        { limit: 100 }
+      );
+
+      const likedItemIds: number[] = [];
+
+      for (let i = 0; i < transactions.length; i++) {
+        const trx = transactions[i];
+
+        const bodySlice = trx.inMessage?.body.asSlice();
+
+        if (bodySlice?.clone().loadUint(32) != likePrefix) continue;
+
+        bodySlice.loadUint(32);
+        const itemId = bodySlice.loadUint(256);
+        const nftIndex = bodySlice.loadUint(256);
+
+        if (validNfts.some((x) => x === nftIndex)) {
+          likedItemIds.push(parseInt(fromNano(itemId)));
+        }
+      }
+
+      console.log("LIEKD ITEMS", likedItemIds);
+      console.log("TRAX", transactions);
+
       console.log("VALID", validNfts);
     }
 
@@ -71,4 +101,6 @@ export default function useNftItem() {
       getValidNfts();
     }
   }, [wallet]);
+
+  return { nftsIndex };
 }
