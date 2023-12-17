@@ -1,36 +1,30 @@
 export class ItemData {
-  // destinationAddress: Address;
   description: String;
   amountToHelp: bigint;
-  currentAmount: bigint;
+  tonAmount: bigint;
   title: String;
-  // deployTime: bigint;
   imageUrl: String;
-  seqno: bigint;
-  // balance: bigint;
-  // liked: boolean;
+  id: number;
+  likes: number;
+  currency: String;
 
   constructor(
-    // destinationAddress: Address,
     description: String,
     amountToHelp: bigint,
-    currentAmount: bigint,
+    tonAmount: bigint,
     title: String,
-    // deployTime: bigint,
     imageUrl: String,
-    seqno: bigint
-    // balance: bigint,
-    // liked: boolean
+    seqno: number,
+    likes: number,
+    currency: String
   ) {
-    // this.destinationAddress = destinationAddress;
     this.description = description;
     this.amountToHelp = amountToHelp;
-    this.currentAmount = currentAmount;
+    this.tonAmount = tonAmount;
     this.title = title;
-    // this.deployTime = deployTime;
     this.imageUrl = imageUrl;
-    this.seqno = seqno;
-    // this.balance = balance;
-    // this.liked = liked;
+    this.id = seqno;
+    this.likes = likes;
+    this.currency = currency;
   }
 }

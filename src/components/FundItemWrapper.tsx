@@ -1,5 +1,5 @@
 import { Grid, Typography, CircularProgress, Button } from "@mui/material";
-import { fromNano, Address } from "ton-core";
+import { fromNano, Address, toNano } from "ton-core";
 import { FundItemBox, ImageBox } from "./styled/styled";
 import { ItemData } from "../models/ItemData";
 import { useTonConnect } from "../hooks/useTonConnect";
@@ -14,7 +14,7 @@ export interface IItemWrapperProps {
   liked: boolean;
   currentAmount: bigint;
   amountToHelp: bigint;
-  itemSeqno: bigint;
+  itemSeqno: number;
   nftsIndex: number[] | undefined;
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -52,7 +52,7 @@ export default function FundItemWrapper({
               <Grid item mb={"0.9rem"}>
                 <div>
                   <h3>
-                    {title} {fromNano(itemSeqno)}
+                    {title} {itemSeqno}
                   </h3>
                   <div>{description}</div>
                 </div>
@@ -108,7 +108,23 @@ export default function FundItemWrapper({
                     );
                     return;
                   }
-                  sendLike(itemSeqno, nftsIndex![0]);
+
+                  //TODO: проблема в том что юзеру придётся два раза подряд подтверждать транзу в кошельке
+                  if (nftsIndex) {
+                    let liked = false;
+                    for (let i = 0; i < nftsIndex.length; i++) {
+                      sendLike(toNano(itemSeqno), nftsIndex[i])?.then((x) => {
+                        if (!liked) {
+                          const data: ItemData[] = JSON.parse(
+                            localStorage.getItem("items")!
+                          );
+                          let obj = data.find((x) => x.id == itemSeqno)!;
+                          obj.likes = obj.likes + 1;
+                          liked = true;
+                        }
+                      });
+                    }
+                  }
                 }}
               >
                 <Typography color="white" fontSize="10px">

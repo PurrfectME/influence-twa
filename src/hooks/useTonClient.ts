@@ -6,7 +6,6 @@ import { useTonConnect } from "./useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 
 export function useTonClient() {
-  const { network } = useTonConnect();
   //TODO: add balances here
   return {
     client: useAsyncInitialize(async () => {
@@ -15,6 +14,6 @@ export function useTonClient() {
           network: "testnet",
         }),
       });
-    }, [network]),
+    }, []),
   };
 }

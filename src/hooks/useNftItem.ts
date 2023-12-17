@@ -9,27 +9,28 @@ import { COLLECTION_ADDRESS } from "./useNftCollection";
 import { useEffect, useState } from "react";
 
 export default function useNftItem() {
-  const likePrefix = 798965746;
+  const LIKE_PREFIX = 798965746;
   const nftDeployPrefix = 608941821;
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const wallet = useTonWallet();
   const { client: tonApiClient } = useTonApiClient();
   const [nftsIndex, setNftsIndex] = useState<number[]>([]);
+  const [likedIds, setLikedIds] = useState<number[]>();
 
-  const itemContract = useAsyncInitialize(async () => {
-    if (!client || !sender.address) return;
+  //   const itemContract = useAsyncInitialize(async () => {
+  //     if (!client || !sender.address) return;
 
-    // await getAdress();
+  //     // await getAdress();
 
-    const contract = new NftItem(
-      Address.parse("EQC_j3X1doR4CoPcA3p659Jo-CXbG8LqAdR5-3XOGElh-09v")
-    );
+  //     const contract = new NftItem(
+  //       Address.parse("EQC_j3X1doR4CoPcA3p659Jo-CXbG8LqAdR5-3XOGElh-09v")
+  //     );
 
-    const result = client.open(contract) as OpenedContract<NftItem>;
+  //     const result = client.open(contract) as OpenedContract<NftItem>;
 
-    return result;
-  }, [client]);
+  //     return result;
+  //   }, [client]);
 
   useEffect(() => {
     async function getValidNfts() {
@@ -80,7 +81,7 @@ export default function useNftItem() {
 
         const bodySlice = trx.inMessage?.body.asSlice();
 
-        if (bodySlice?.clone().loadUint(32) != likePrefix) continue;
+        if (bodySlice?.clone().loadUint(32) != LIKE_PREFIX) continue;
 
         bodySlice.loadUint(32);
         const itemId = bodySlice.loadUint(256);
@@ -91,16 +92,17 @@ export default function useNftItem() {
         }
       }
 
-      console.log("LIEKD ITEMS", likedItemIds);
-      console.log("TRAX", transactions);
+      setLikedIds(likedItemIds);
+      //   console.log("LIEKD ITEMS", likedItemIds);
+      //   console.log("TRAX", transactions);
 
-      console.log("VALID", validNfts);
+      //   console.log("VALID", validNfts);
     }
 
-    if (wallet) {
+    if (wallet && client) {
       getValidNfts();
     }
-  }, [wallet]);
+  }, [wallet, client]);
 
-  return { nftsIndex };
+  return { nftsIndex, likedIds };
 }

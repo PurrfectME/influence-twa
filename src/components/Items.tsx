@@ -45,9 +45,9 @@ export default function Items({
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}
-              currentAmount={x.currentAmount}
+              currentAmount={x.tonAmount}
               liked={false}
-              itemSeqno={x.seqno}
+              itemSeqno={x.id}
               fetchItems={fetchItems}
               setLoading={setLoading}
             />
@@ -77,9 +77,9 @@ export default function Items({
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}
-              currentAmount={x.currentAmount}
+              currentAmount={x.tonAmount}
               liked={true}
-              itemSeqno={x.seqno}
+              itemSeqno={x.id}
               fetchItems={fetchItems}
               setLoading={setLoading}
             />

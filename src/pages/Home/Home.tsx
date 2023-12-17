@@ -46,7 +46,7 @@ export default function Home() {
   const wallet = useTonWallet();
   // const { nfts } = useTonApiClient(wallet?.account.address);
   // useNftCollection();
-  const { nftsIndex } = useNftItem();
+  const { nftsIndex, likedIds } = useNftItem();
 
   const { client } = useTonClient();
   // const {
@@ -59,7 +59,7 @@ export default function Home() {
 
   const [tonBalance, setTonBalance] = useState<bigint>();
   const { buyNft } = useNftCollection();
-  const { liked, available, loading, setLoading } = useItems();
+  const { liked, available, loading, setLoading } = useItems(likedIds);
   const [showInsufficientAmount, setShowInsufficientAmount] = useState(false);
 
   useEffect(() => {
