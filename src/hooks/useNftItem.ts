@@ -81,7 +81,8 @@ export default function useNftItem() {
 
         const bodySlice = trx.inMessage?.body.asSlice();
 
-        if (bodySlice?.clone().loadUint(32) != LIKE_PREFIX) continue;
+        if (!bodySlice || bodySlice?.clone().loadUint(32) != LIKE_PREFIX)
+          continue;
 
         bodySlice.loadUint(32);
         const itemId = bodySlice.loadUint(256);
@@ -93,10 +94,6 @@ export default function useNftItem() {
       }
 
       setLikedIds(likedItemIds);
-      //   console.log("LIEKD ITEMS", likedItemIds);
-      //   console.log("TRAX", transactions);
-
-      //   console.log("VALID", validNfts);
     }
 
     if (wallet && client) {

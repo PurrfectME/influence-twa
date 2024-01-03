@@ -58,6 +58,7 @@ export default class NftCollection implements Contract {
 
     //TODO: API для пагинации
     //TODO: API для получения рейтов (TON + ITEM_CURRENCY)
+    //TODO: добавить Skeleton
 
     //TOHA
     //TODO: API для рейтов, API для пагинации, CRUD для айтемов

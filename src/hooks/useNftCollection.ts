@@ -14,8 +14,6 @@ export const COLLECTION_ADDRESS =
 export default function useNftCollection() {
   const { sender } = useTonConnect();
   const { client } = useTonClient();
-  const wallet = useTonWallet();
-  const { client: tonApiClient } = useTonApiClient();
 
   const collectionContract = useAsyncInitialize(async () => {
     if (!client) return;

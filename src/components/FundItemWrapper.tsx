@@ -109,18 +109,28 @@ export default function FundItemWrapper({
                     return;
                   }
 
-                  //TODO: проблема в том что юзеру придётся два раза подряд подтверждать транзу в кошельке
+                  //check for nft and show modal box if user doesnt own any
+
                   if (nftsIndex) {
-                    let liked = false;
+                    let likedByUser = false;
                     for (let i = 0; i < nftsIndex.length; i++) {
                       sendLike(toNano(itemSeqno), nftsIndex[i])?.then((x) => {
-                        if (!liked) {
+                        if (!likedByUser) {
                           const data: ItemData[] = JSON.parse(
                             localStorage.getItem("items")!
                           );
-                          let obj = data.find((x) => x.id == itemSeqno)!;
-                          obj.likes = obj.likes + 1;
-                          liked = true;
+
+                          for (let i = 0; i < data.length; i++) {
+                            const item = data[i];
+
+                            if (item.id !== itemSeqno) {
+                              continue;
+                            }
+
+                            item.likes = item.likes + 1;
+                          }
+                          likedByUser = true;
+                          localStorage.setItem("items", JSON.stringify(data));
                         }
                       });
                     }
