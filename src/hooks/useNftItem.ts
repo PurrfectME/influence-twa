@@ -71,7 +71,7 @@ export default function useNftItem() {
 
       const transactions = await client!.getTransactions(
         Address.parse(COLLECTION_ADDRESS),
-        { limit: 100 }
+        { limit: 30 }
       );
 
       const likedItemIds: number[] = [];

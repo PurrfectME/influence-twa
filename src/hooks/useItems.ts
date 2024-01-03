@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ItemData } from "../models/ItemData";
 import { fromNano, toNano } from "ton-core";
+import { log } from "console";
 
 export let initialData = [
   {
@@ -43,26 +44,140 @@ export let initialData = [
     likes: 25,
     currency: "USDT",
   },
+  {
+    id: 5,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 6,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 7,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 8,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 9,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 10,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 11,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 12,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 13,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 14,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
+  {
+    id: 15,
+    title: "TITLE",
+    description: "DESCRIPTION",
+    tonAmount: 0,
+    amountToHelp: 20,
+    imageUrl: "IMAGE",
+    likes: 25,
+    currency: "USDT",
+  },
 ];
 
 if (!localStorage.getItem("items")) {
   localStorage.setItem("items", JSON.stringify(initialData));
 }
 
-export function useItems(likedIds: number[] | undefined) {
+export function useItems(likedIds: number[] | undefined, page: number) {
+  const ITEMS_AMOUNT: number = 10;
+
   const [liked, setLiked] = useState<ItemData[]>([]);
   const [available, setAvailable] = useState<ItemData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [pageAmount, setPageAmount] = useState(1);
 
   useEffect(() => {
     console.log("LIKED", likedIds);
 
     if (!likedIds) return;
+
     const l: ItemData[] = [];
     const a: ItemData[] = [];
     const data: ItemData[] = JSON.parse(localStorage.getItem("items")!);
-
-    console.log("DATA", data);
+    const totalAmount = data.length - likedIds.length;
+    setPageAmount(Math.ceil(totalAmount / ITEMS_AMOUNT));
 
     if (likedIds.length == 0) {
       data.map((item) => {
@@ -79,8 +194,12 @@ export function useItems(likedIds: number[] | undefined) {
           )
         );
       });
-      setAvailable(a);
+      const end =
+        a.length < page * ITEMS_AMOUNT ? a.length + 1 : page * ITEMS_AMOUNT;
+
+      setAvailable(a.slice(page * ITEMS_AMOUNT - ITEMS_AMOUNT, end));
       setLoading(false);
+
       return;
     }
 
@@ -115,12 +234,13 @@ export function useItems(likedIds: number[] | undefined) {
         );
       }
     }
-
     setLiked(l);
-    setAvailable(a);
+    const end =
+      a.length < page * ITEMS_AMOUNT ? a.length + 1 : page * ITEMS_AMOUNT;
 
+    setAvailable(a.slice(page * ITEMS_AMOUNT - ITEMS_AMOUNT, end));
     setLoading(false);
-  }, [likedIds]);
+  }, [likedIds, page]);
 
-  return { available, liked, loading, setLoading };
+  return { available, liked, pageAmount, loading, setLoading };
 }

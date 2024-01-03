@@ -7,6 +7,7 @@ import {
   Card,
   CircularProgress,
   Grid,
+  Pagination,
   Snackbar,
   SvgIcon,
   createSvgIcon,
@@ -44,22 +45,20 @@ export default function Home() {
   //TODO: перенести папку wrappers из tact проекта
   const { connected } = useTonConnect();
   const wallet = useTonWallet();
-  // const { nfts } = useTonApiClient(wallet?.account.address);
-  // useNftCollection();
   const { nftsIndex, likedIds } = useNftItem();
-
   const { client } = useTonClient();
-  // const {
-  //   createItem,
-  //   address: fundAddress,
-  //   fetchItems,
-  //   loading,
-  //   setLoading,
-  // } = useFundContract();
 
   const [tonBalance, setTonBalance] = useState<bigint>();
   const { buyNft } = useNftCollection();
-  const { liked, available, loading, setLoading } = useItems(likedIds);
+
+  const [page, setPage] = useState(1);
+  const handleChange = (_: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
+
+  const { liked, available, pageAmount, loading, setLoading } = useItems(
+    likedIds,
+    page
+  );
   const [showInsufficientAmount, setShowInsufficientAmount] = useState(false);
 
   useEffect(() => {
@@ -143,13 +142,22 @@ export default function Home() {
 
         <Grid container display={"flex"} justifyContent={"center"} mt={"2vh"}>
           {!loading ? (
-            <Items
-              nftsIndex={nftsIndex}
-              setLoading={setLoading}
-              fetchItems={() => new Promise((r) => r)}
-              likedData={liked}
-              availableData={available}
-            />
+            <>
+              <Items
+                nftsIndex={nftsIndex}
+                setLoading={setLoading}
+                fetchItems={() => new Promise((r) => r)}
+                likedData={liked}
+                availableData={available}
+              />
+
+              <Pagination
+                siblingCount={2}
+                count={pageAmount}
+                page={page}
+                onChange={handleChange}
+              />
+            </>
           ) : (
             <Grid
               container
