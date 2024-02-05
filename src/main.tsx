@@ -2,7 +2,6 @@ import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/Home/Home";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import HelpRequest from "./pages/HelpRequest/HelpRequest";
 import "@twa-dev/sdk";
 import styled from "styled-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,7 +39,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <AppContainer>
             <Routes>
               <Route path="/influence-twa" element={<Home />} />
-              <Route path="/influence-twa/requests" element={<HelpRequest />} />
             </Routes>
           </AppContainer>
         </StyledApp>

@@ -12,7 +12,6 @@ import {
   SvgIcon,
   createSvgIcon,
 } from "@mui/material";
-import { useFundContract } from "../../hooks/useFundContract";
 import { useEffect, useState } from "react";
 import { useTonClient } from "../../hooks/useTonClient";
 import Items from "../../components/Items";
@@ -22,7 +21,7 @@ import { useItems } from "../../hooks/useItems";
 import useNftItem from "../../hooks/useNftItem";
 import { useTonApiClient } from "../../hooks/useTonApi";
 
-const TonSymbol = (
+export const TonSymbol = (
   <svg
     width="56"
     height="56"

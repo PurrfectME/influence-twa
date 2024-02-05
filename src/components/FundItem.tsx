@@ -116,6 +116,7 @@ export function FundItem({ address }: any) {
                   size="small"
                   variant="contained"
                   onClick={() => {
+                    console.log("HERE");
                     if (!connected) {
                       //show modal
                       handleOpen(
@@ -152,6 +153,8 @@ export function FundItem({ address }: any) {
                 size="small"
                 variant="contained"
                 onClick={() => {
+                  console.log("HERE");
+
                   if (!connected) {
                     //show modal
                     handleOpen(

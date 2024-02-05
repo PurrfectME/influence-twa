@@ -12,25 +12,10 @@ export default function useNftItem() {
   const LIKE_PREFIX = 798965746;
   const nftDeployPrefix = 608941821;
   const { client } = useTonClient();
-  const { sender } = useTonConnect();
   const wallet = useTonWallet();
   const { client: tonApiClient } = useTonApiClient();
   const [nftsIndex, setNftsIndex] = useState<number[]>([]);
-  const [likedIds, setLikedIds] = useState<number[]>();
-
-  //   const itemContract = useAsyncInitialize(async () => {
-  //     if (!client || !sender.address) return;
-
-  //     // await getAdress();
-
-  //     const contract = new NftItem(
-  //       Address.parse("EQC_j3X1doR4CoPcA3p659Jo-CXbG8LqAdR5-3XOGElh-09v")
-  //     );
-
-  //     const result = client.open(contract) as OpenedContract<NftItem>;
-
-  //     return result;
-  //   }, [client]);
+  const [likedIds, setLikedIds] = useState<number[]>([]);
 
   useEffect(() => {
     async function getValidNfts() {
@@ -44,6 +29,8 @@ export default function useNftItem() {
           Address.parse(COLLECTION_ADDRESS).toRawString()
         );
       });
+
+      console.log("USER NFTS", userNfts);
 
       const validNfts: number[] = [];
 
@@ -69,9 +56,11 @@ export default function useNftItem() {
 
       setNftsIndex(validNfts);
 
+      console.log("validNfts", validNfts);
+
       const transactions = await client!.getTransactions(
         Address.parse(COLLECTION_ADDRESS),
-        { limit: 30 }
+        { limit: 10 }
       );
 
       const likedItemIds: number[] = [];

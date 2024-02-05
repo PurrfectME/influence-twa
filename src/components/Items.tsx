@@ -73,7 +73,7 @@ export default function Items({
           {likedData.map((x, i) => (
             <FundItemWrapper
               key={i}
-              nftsIndex={undefined}
+              nftsIndex={undefined} //TODO: FIX HERE
               description={x.description}
               amountToHelp={x.amountToHelp}
               title={x.title}

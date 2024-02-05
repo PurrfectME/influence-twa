@@ -32,10 +32,8 @@ export const Spacer = styled.div<{ height: number }>`
 `;
 
 export const FundItemBox = styled.div`
-  max-width: 300px;
-  max-height: 500px;
-  height: 310px;
-  width: 160px;
+  width: 210px;
+
   border-radius: 25px;
   background-color: white;
   border: 1px solid black;
