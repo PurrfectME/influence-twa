@@ -8,7 +8,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { ConnectedWallet } from "@tonconnect/ui-react";
 import React from "react";
-import { IDialogProps } from "./FundItem";
+import { IDialogProps } from "./ConnectWalletDialog";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
