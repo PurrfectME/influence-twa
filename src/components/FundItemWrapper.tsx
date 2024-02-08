@@ -1,12 +1,4 @@
-import {
-  Grid,
-  Typography,
-  CircularProgress,
-  Button,
-  SvgIcon,
-  createSvgIcon,
-  Box,
-} from "@mui/material";
+import { Grid, Typography, Button, Box } from "@mui/material";
 import { fromNano, Address, toNano } from "ton-core";
 import { FundItemBox, ImageBox } from "./styled/styled";
 import { ItemData } from "../models/ItemData";
@@ -131,22 +123,24 @@ export default function FundItemWrapper({
               borderTopRightRadius: "25px",
               backgroundSize: "cover",
             }}
-          ></Box>
+          />
 
-          <Grid container padding={"0.6rem"}>
+          <Grid container padding={"0.6rem 0.6rem 0 0.6rem"}>
             <Grid container>
               <Grid item mb={"0.9rem"}>
                 <Typography variant="h6" component="h6" lineHeight={1}>
                   {title}
                 </Typography>
-                <Typography
-                  variant="subtitle1"
-                  lineHeight={1}
-                  fontSize={"0.87em"}
-                  mt={"0.5em"}
-                >
-                  {description}
-                </Typography>
+                <Grid item overflow={"overlay"} height={"20vh"}>
+                  <Typography
+                    variant="subtitle1"
+                    lineHeight={1}
+                    fontSize={"0.87em"}
+                    mt={"0.5em"}
+                  >
+                    {description}
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -214,7 +208,12 @@ export default function FundItemWrapper({
 
       <ItemDialog
         open={itemDialogOpen}
-        dialogMessage={`Application №${itemSeqno}`}
+        appTitle={`Application №${itemSeqno}`}
+        title={title}
+        description={description}
+        currentAmount={currentAmount}
+        amountToHelp={amountToHelp}
+        liked={liked}
         handleClose={handleItemDialogClose}
       />
     </>
