@@ -58,7 +58,7 @@ export function ItemDialog({
         onClose={handleClose}
         fullScreen={fullScreen}
       >
-        <DialogTitle>
+        <DialogTitle padding={"10px 24px !important"}>
           <Grid
             container
             flexDirection={"row"}
@@ -74,7 +74,7 @@ export function ItemDialog({
           flexDirection={"column"}
           justifyContent={"space-between"}
           // width={"13.125em"}
-          height={"27.8em"}
+          // height={"27.8em"}
         >
           <Grid container>
             {/* <ImageBox /> */}
@@ -88,7 +88,7 @@ export function ItemDialog({
               }}
             />
 
-            <Grid container padding={"0 0.6rem 0.6rem"}>
+            <Grid container padding={"0 0.6rem 0.6rem"} mt={"2vh"}>
               <Grid container>
                 <Grid item mb={"0.9rem"}>
                   <Typography variant="h6" component="h6" lineHeight={1}>
