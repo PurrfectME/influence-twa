@@ -214,6 +214,7 @@ export default function FundItemWrapper({
         currentAmount={currentAmount}
         amountToHelp={amountToHelp}
         liked={liked}
+        donate={donate}
         handleClose={handleItemDialogClose}
       />
     </>

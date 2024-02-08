@@ -34,12 +34,14 @@ interface IItemDialogProps {
   liked: boolean;
   open: boolean;
   handleClose: () => void;
+  donate: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export function ItemDialog({
   appTitle,
   open,
   handleClose,
+  donate,
   title,
   description,
   currentAmount,
@@ -149,7 +151,7 @@ export function ItemDialog({
                 }}
                 size={"small"}
                 variant="contained"
-                // onClick={(e) => donate(e)}
+                onClick={(e) => donate(e)}
               >
                 <Typography color="white" fontSize="10px">
                   {liked ? "U helped!" : "Like"}
