@@ -20,37 +20,27 @@ export default function Items({
 }: IItemsProps) {
   return (
     <>
-      <Grid
-        container
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"start"}
-      >
+      <Grid container flexDirection={"column"} justifyContent={"start"}>
         <h2>
           {availableData.length != 0
             ? "Available"
             : "No Available Applications"}
         </h2>
-        <Grid
-          container
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"start"}
-          gap={"10px"}
-        >
+        <Grid container display={"flex"} justifyContent={"center"} gap={"10px"}>
           {availableData.map((x, i) => (
-            <FundItemWrapper
-              key={i}
-              nftsIndex={nftsIndex}
-              description={x.description}
-              amountToHelp={x.amountToHelp}
-              title={x.title}
-              currentAmount={x.tonAmount}
-              liked={false}
-              itemSeqno={x.id}
-              fetchItems={fetchItems}
-              setLoading={setLoading}
-            />
+            <Grid key={i} item xs={12} sm={3} md={3} lg={3} minWidth={"181px"}>
+              <FundItemWrapper
+                nftsIndex={nftsIndex}
+                description={x.description}
+                amountToHelp={x.amountToHelp}
+                title={x.title}
+                currentAmount={x.tonAmount}
+                liked={false}
+                itemSeqno={x.id}
+                fetchItems={fetchItems}
+                setLoading={setLoading}
+              />
+            </Grid>
           ))}
         </Grid>
       </Grid>
@@ -65,24 +55,24 @@ export default function Items({
         <h2>{likedData.length != 0 ? "Liked" : "No Liked Applications"}</h2>
         <Grid
           container
-          display={"flex"}
           flexDirection={"row"}
           justifyContent={"start"}
           gap={"10px"}
         >
           {likedData.map((x, i) => (
-            <FundItemWrapper
-              key={i}
-              nftsIndex={undefined} //TODO: FIX HERE
-              description={x.description}
-              amountToHelp={x.amountToHelp}
-              title={x.title}
-              currentAmount={x.tonAmount}
-              liked={true}
-              itemSeqno={x.id}
-              fetchItems={fetchItems}
-              setLoading={setLoading}
-            />
+            <Grid key={i} item xs={12} sm={3} md={3} lg={3}>
+              <FundItemWrapper
+                nftsIndex={undefined} //TODO: FIX HERE
+                description={x.description}
+                amountToHelp={x.amountToHelp}
+                title={x.title}
+                currentAmount={x.tonAmount}
+                liked={true}
+                itemSeqno={x.id}
+                fetchItems={fetchItems}
+                setLoading={setLoading}
+              />
+            </Grid>
           ))}
         </Grid>
       </Grid>

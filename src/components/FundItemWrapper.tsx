@@ -5,6 +5,7 @@ import {
   Button,
   SvgIcon,
   createSvgIcon,
+  Box,
 } from "@mui/material";
 import { fromNano, Address, toNano } from "ton-core";
 import { FundItemBox, ImageBox } from "./styled/styled";
@@ -14,7 +15,8 @@ import { useTonConnectUI } from "@tonconnect/ui-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ConnectWalletDialog } from "./ConnectWalletDialog";
 import useNftCollection from "../hooks/useNftCollection";
-import { TonSymbol } from "../pages/Home/Home";
+import img from "../images/img.jpeg";
+import { ItemDialog } from "./ItemDialog";
 
 export interface IItemWrapperProps {
   title: String;
@@ -41,19 +43,29 @@ export default function FundItemWrapper({
 }: IItemWrapperProps) {
   const { connected } = useTonConnect();
   const [tonConnectUI] = useTonConnectUI();
-  const [dialogMessage, setDialogMessage] = useState<String>();
-  const [open, setOpen] = useState(false);
   const { sendLike } = useNftCollection();
-  const handleOpen = (message: String) => {
-    setDialogMessage(message);
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
 
-  const donate = () => {
+  const [dialogMessage, setDialogMessage] = useState<String>("");
+  const [walletDialogOpen, setWalletDialogOpen] = useState(false);
+  const [itemDialogOpen, setItemDialogOpen] = useState(false);
+
+  const handleWalletDialogOpen = (message: String) => {
+    setDialogMessage(message);
+    setWalletDialogOpen(true);
+  };
+  const handleWalletDialogClose = () => setWalletDialogOpen(false);
+
+  const handleItemDialogOpen = () => {
+    setItemDialogOpen(true);
+  };
+  const handleItemDialogClose = () => setItemDialogOpen(false);
+
+  const donate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+
     if (!connected) {
       //show modal
-      handleOpen("To donate you have to connect your ton wallet!");
+      handleWalletDialogOpen("To donate you have to connect your ton wallet!");
       return;
     }
 
@@ -101,11 +113,25 @@ export default function FundItemWrapper({
         border={"1px solid black"}
         borderRadius={"25px"}
         style={{ backgroundColor: "white" }}
-        width={"13.125em"}
-        height={"365px"}
+        // width={"13.125em"}
+        height={"27.8em"}
+        onClick={(e) => {
+          setItemDialogOpen(true);
+        }}
       >
-        <Grid container onClick={() => {}}>
-          <ImageBox />
+        <Grid container>
+          {/* <ImageBox /> */}
+          <Box
+            sx={{
+              backgroundImage: `url(${img})`,
+              backgroundRepeat: "no-repeat",
+              height: "180px",
+              width: "inherit",
+              borderTopLeftRadius: "25px",
+              borderTopRightRadius: "25px",
+              backgroundSize: "cover",
+            }}
+          ></Box>
 
           <Grid container padding={"0.6rem"}>
             <Grid container>
@@ -123,24 +149,6 @@ export default function FundItemWrapper({
                 </Typography>
               </Grid>
             </Grid>
-            <Grid container>
-              <Grid
-                container
-                direction="column"
-                justifyContent={"space-between"}
-              >
-                <Grid item>
-                  <Typography style={{ fontSize: "10px" }}>
-                    Собрано: {fromNano(currentAmount)} TON
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography style={{ fontSize: "10px" }}>
-                    Нужно: {fromNano(amountToHelp)} TON
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
           </Grid>
         </Grid>
 
@@ -148,8 +156,25 @@ export default function FundItemWrapper({
           container
           flexDirection={"column"}
           alignItems={"center"}
-          marginBottom={"25px"}
+          marginBottom={"0.938em"}
         >
+          <Grid
+            container
+            direction="column"
+            justifyContent={"space-between"}
+            padding={"0.6rem"}
+          >
+            <Grid item>
+              <Typography style={{ fontSize: "10px" }}>
+                Собрано: {fromNano(currentAmount)} TON
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography style={{ fontSize: "10px" }}>
+                Нужно: {fromNano(amountToHelp)} TON
+              </Typography>
+            </Grid>
+          </Grid>
           <Grid
             item
             sx={{
@@ -169,7 +194,7 @@ export default function FundItemWrapper({
                 }}
                 size={"small"}
                 variant="contained"
-                onClick={donate}
+                onClick={(e) => donate(e)}
               >
                 <Typography color="white" fontSize="10px">
                   {liked ? "U helped!" : "Like"}
@@ -181,10 +206,16 @@ export default function FundItemWrapper({
       </Grid>
 
       <ConnectWalletDialog
-        open={open}
-        dialogMessage={"To donate you have to connect your ton wallet!"}
-        handleClose={handleClose}
+        open={walletDialogOpen}
+        dialogMessage={dialogMessage}
+        handleClose={handleWalletDialogClose}
         connectWallet={() => tonConnectUI.connectWallet()}
+      />
+
+      <ItemDialog
+        open={itemDialogOpen}
+        dialogMessage={`Application №${itemSeqno}`}
+        handleClose={handleItemDialogClose}
       />
     </>
   );

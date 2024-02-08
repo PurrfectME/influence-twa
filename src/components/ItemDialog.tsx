@@ -6,7 +6,6 @@ import {
   Slide,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { ConnectedWallet } from "@tonconnect/ui-react";
 import React from "react";
 
 const Transition = React.forwardRef(function Transition(
@@ -18,19 +17,17 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export interface IDialogProps {
+interface IItemDialogProps {
   dialogMessage: String;
   open: boolean;
   handleClose: () => void;
-  connectWallet: () => Promise<ConnectedWallet> | undefined;
 }
 
-export function ConnectWalletDialog({
+export function ItemDialog({
   dialogMessage,
   open,
   handleClose,
-  connectWallet,
-}: IDialogProps) {
+}: IItemDialogProps) {
   return (
     <Dialog
       open={open}
@@ -45,8 +42,6 @@ export function ConnectWalletDialog({
           onClick={() => {
             //IF NO INF TOKENS ON WALLET BUY SOME
             handleClose();
-
-            connectWallet();
           }}
         >
           Connect

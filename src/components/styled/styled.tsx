@@ -47,7 +47,7 @@ export const ImageBox = styled.div`
   max-width: 300px;
   max-height: 300px;
   width: inherit;
-  height: 150px;
+  height: 180px;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
 
