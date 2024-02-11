@@ -1,6 +1,12 @@
 import { Grid, Typography, Button, Box } from "@mui/material";
 import { fromNano, Address, toNano } from "ton-core";
-import { FundItemBox, ImageBox } from "./styled/styled";
+import {
+  Circle,
+  FundItemBox,
+  ImageBox,
+  Rectangle,
+  RectangleContainer,
+} from "./styled/styled";
 import { ItemData } from "../models/ItemData";
 import { useTonConnect } from "../hooks/useTonConnect";
 import { useTonConnectUI } from "@tonconnect/ui-react";
@@ -96,6 +102,14 @@ export default function FundItemWrapper({
     }
   };
 
+  const readMoreClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+
+    handleItemDialogOpen();
+  };
+
   return (
     <>
       <Grid
@@ -136,7 +150,7 @@ export default function FundItemWrapper({
                 >
                   {title}
                 </Typography>
-                <Grid item overflow={"overlay"} height={"21vh"}>
+                <Grid item>
                   <Typography
                     variant="subtitle1"
                     lineHeight={1}
@@ -144,7 +158,22 @@ export default function FundItemWrapper({
                     mt={"0.5em"}
                     color={"black"}
                   >
-                    {description}
+                    {description.length < 270
+                      ? description
+                      : description.substring(0, 270)}
+                    {description.length > 270 ? (
+                      <RectangleContainer>
+                        <Button centerRipple onClick={(e) => readMoreClick(e)}>
+                          <Rectangle>
+                            <Circle />
+                            <Circle />
+                            <Circle />
+                          </Rectangle>
+                        </Button>
+                      </RectangleContainer>
+                    ) : (
+                      <></>
+                    )}
                   </Typography>
                 </Grid>
               </Grid>
@@ -165,13 +194,13 @@ export default function FundItemWrapper({
             padding={"0.6rem"}
           >
             <Grid item>
-              <Typography fontSize={"10px"} color={"black"}>
-                Собрано: {fromNano(currentAmount)} TON
+              <Typography fontWeight={"bold"} fontSize={"10px"} color={"black"}>
+                Collected: {fromNano(currentAmount)} TON
               </Typography>
             </Grid>
             <Grid item>
-              <Typography fontSize={"10px"} color={"black"}>
-                Нужно: {fromNano(amountToHelp)} TON
+              <Typography fontWeight={"bold"} fontSize={"10px"} color={"black"}>
+                Needed: {fromNano(amountToHelp)} TON
               </Typography>
             </Grid>
           </Grid>

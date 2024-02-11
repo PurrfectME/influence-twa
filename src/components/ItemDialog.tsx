@@ -123,12 +123,12 @@ export function ItemDialog({
             >
               <Grid item>
                 <Typography style={{ fontSize: "10px" }}>
-                  Собрано: {fromNano(currentAmount)} TON
+                  Collected: {fromNano(currentAmount)} TON
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography style={{ fontSize: "10px" }}>
-                  Нужно: {fromNano(amountToHelp)} TON
+                  Needed: {fromNano(amountToHelp)} TON
                 </Typography>
               </Grid>
             </Grid>

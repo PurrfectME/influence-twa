@@ -83,3 +83,26 @@ export const Input = styled("input")`
     border: 1px solid #fefefe;
   }
 `;
+
+export const RectangleContainer = styled.div`
+  display: inline-flex;
+  justify-content: center;
+`;
+
+export const Rectangle = styled.div`
+  width: 32px;
+  height: 12px;
+  background-color: lightgrey;
+  display: flex;
+  justify-content: space-around;
+  border: 1px solid;
+  border-radius: 12px;
+  align-items: center;
+`;
+
+export const Circle = styled.div`
+  width: 4px;
+  height: 4px;
+  background-color: black;
+  border-radius: 50%;
+`;
