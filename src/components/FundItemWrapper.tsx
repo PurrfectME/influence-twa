@@ -106,7 +106,7 @@ export default function FundItemWrapper({
         borderRadius={"25px"}
         style={{ backgroundColor: "white" }}
         // width={"13.125em"}
-        height={"27.8em"}
+        height={"31em"}
         onClick={(e) => {
           setItemDialogOpen(true);
         }}
@@ -129,19 +129,20 @@ export default function FundItemWrapper({
             <Grid container>
               <Grid item mb={"0.9rem"}>
                 <Typography
-                  color={"red"}
+                  color={"black"}
                   variant="h6"
                   component="h6"
                   lineHeight={1}
                 >
                   {title}
                 </Typography>
-                <Grid item overflow={"overlay"} height={"20vh"}>
+                <Grid item overflow={"overlay"} height={"21vh"}>
                   <Typography
                     variant="subtitle1"
                     lineHeight={1}
                     fontSize={"0.87em"}
                     mt={"0.5em"}
+                    color={"black"}
                   >
                     {description}
                   </Typography>
@@ -164,12 +165,12 @@ export default function FundItemWrapper({
             padding={"0.6rem"}
           >
             <Grid item>
-              <Typography style={{ fontSize: "10px" }}>
+              <Typography fontSize={"10px"} color={"black"}>
                 Собрано: {fromNano(currentAmount)} TON
               </Typography>
             </Grid>
             <Grid item>
-              <Typography style={{ fontSize: "10px" }}>
+              <Typography fontSize={"10px"} color={"black"}>
                 Нужно: {fromNano(amountToHelp)} TON
               </Typography>
             </Grid>
