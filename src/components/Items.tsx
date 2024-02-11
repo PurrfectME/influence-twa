@@ -61,7 +61,7 @@ export default function Items({
                 sm={3}
                 md={3}
                 lg={3}
-                minWidth={"181px"}
+                minWidth={"281px"}
               >
                 <FundItemWrapper
                   nftsIndex={nftsIndex}
@@ -81,7 +81,15 @@ export default function Items({
         <CustomTabPanel value={value} index={1}>
           <Grid mt={"15px"} container justifyContent={"center"} gap={"10px"}>
             {likedData.map((x, i) => (
-              <Grid key={i} item xs={12} sm={3} md={3} lg={3}>
+              <Grid
+                key={i}
+                item
+                xs={12}
+                sm={3}
+                md={3}
+                lg={3}
+                minWidth={"281px"}
+              >
                 <FundItemWrapper
                   nftsIndex={undefined} //TODO: FIX HERE
                   description={x.description}

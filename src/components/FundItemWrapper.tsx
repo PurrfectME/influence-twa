@@ -150,7 +150,7 @@ export default function FundItemWrapper({
                 >
                   {title}
                 </Typography>
-                <Grid item>
+                <Grid item height={"21vh"}>
                   <Typography
                     variant="subtitle1"
                     lineHeight={1}
