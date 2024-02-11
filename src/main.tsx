@@ -31,6 +31,8 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 });
 
+localStorage.removeItem("items");
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Router>
     <TonConnectUIProvider manifestUrl={manifestUrl}>
