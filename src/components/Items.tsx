@@ -48,8 +48,8 @@ export default function Items({
     <>
       <Grid container flexDirection={"column"} justifyContent={"start"}>
         <Tabs value={value} onChange={handleChange} centered>
-          <Tab label="Available" />
-          <Tab label="Liked" />
+          <Tab sx={{ color: "var(--tg-theme-tab-color)" }} label="Available" />
+          <Tab sx={{ color: "var(--tg-theme-tab-color)" }} label="Liked" />
         </Tabs>
         <CustomTabPanel value={value} index={0}>
           <Grid mt={"15px"} container justifyContent={"center"} gap={"10px"}>
