@@ -128,7 +128,12 @@ export default function FundItemWrapper({
           <Grid container padding={"0.6rem 0.6rem 0 0.6rem"}>
             <Grid container>
               <Grid item mb={"0.9rem"}>
-                <Typography variant="h6" component="h6" lineHeight={1}>
+                <Typography
+                  color={"red"}
+                  variant="h6"
+                  component="h6"
+                  lineHeight={1}
+                >
                   {title}
                 </Typography>
                 <Grid item overflow={"overlay"} height={"20vh"}>
