@@ -145,9 +145,7 @@ export let initialData = [
   },
 ];
 
-if (!localStorage.getItem("items")) {
-  localStorage.setItem("items", JSON.stringify(initialData));
-}
+localStorage.setItem("items", JSON.stringify(initialData));
 
 export function useItems(likedIds: number[] | undefined, page: number) {
   const ITEMS_AMOUNT: number = 10;
