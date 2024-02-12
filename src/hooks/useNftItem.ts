@@ -7,6 +7,8 @@ import { useTonApiClient } from "./useTonApi";
 import { useTonWallet } from "@tonconnect/ui-react";
 import { COLLECTION_ADDRESS } from "./useNftCollection";
 import { useEffect, useState } from "react";
+import TonWeb from "tonweb";
+import { getHttpEndpoint } from "@orbs-network/ton-access";
 
 export default function useNftItem() {
   const LIKE_PREFIX = 798965746;
@@ -19,6 +21,22 @@ export default function useNftItem() {
 
   useEffect(() => {
     async function getValidNfts() {
+      const endpoint = await getHttpEndpoint({
+        network: "testnet",
+        protocol: "json-rpc",
+      });
+
+      const tonweb = new TonWeb(new TonWeb.HttpProvider(endpoint));
+
+      const history = await tonweb.getTransactions(
+        "0QDtut2EnJuBcNr_NUyH0akKXXdDbmMNkBxtRLeHnysAssyk",
+        100
+      );
+
+      //TODO: проверить транзы тонвеб и тонклиента на мейннете если всё ок то оставить тонклиент пока что
+
+      console.log("HISTORY", history);
+
       const result = (
         await tonApiClient.accounts.getAccountNftItems(wallet!.account.address)
       ).nft_items;

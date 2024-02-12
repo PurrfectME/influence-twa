@@ -1,4 +1,4 @@
-import { Grid, Typography, Button, Box } from "@mui/material";
+import { Grid, Typography, Button, Box, Chip } from "@mui/material";
 import { fromNano, Address, toNano } from "ton-core";
 import {
   Circle,
@@ -23,7 +23,7 @@ export interface IItemWrapperProps {
   currentAmount: bigint;
   amountToHelp: bigint;
   itemSeqno: number;
-  nftsIndex: number[] | undefined;
+  nftsIndex: number[];
   fetchItems: () => Promise<void>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
@@ -70,17 +70,12 @@ export default function FundItemWrapper({
     //check for nft and show modal box if user doesnt own any
     console.log("INDEXS", nftsIndex);
 
-    if (nftsIndex?.length) {
+    if (nftsIndex.length != 0) {
       let likedByUser = false;
-      console.log("HERE");
 
       for (let i = 0; i < nftsIndex.length; i++) {
-        // console.log("HERE");
-
         sendLike(toNano(itemSeqno), nftsIndex[i])?.then((x) => {
           if (!likedByUser) {
-            // console.log("HERE");
-
             const data: ItemData[] = JSON.parse(localStorage.getItem("items")!);
 
             for (let i = 0; i < data.length; i++) {
@@ -99,12 +94,11 @@ export default function FundItemWrapper({
       }
     } else {
       console.log("EMPTY");
+      //TODO: show dialog to user of NO EXISITNG NFTs
     }
   };
 
-  const readMoreClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const readMoreClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
 
     handleItemDialogOpen();
@@ -162,16 +156,26 @@ export default function FundItemWrapper({
                       ? description
                       : description.substring(0, 270)}
                     {description.length > 270 ? (
-                      <RectangleContainer>
-                        <Button centerRipple onClick={(e) => readMoreClick(e)}>
-                          <Rectangle>
-                            <Circle />
-                            <Circle />
-                            <Circle />
-                          </Rectangle>
-                        </Button>
-                      </RectangleContainer>
+                      <Chip
+                        sx={{ height: "11px" }}
+                        size="small"
+                        label="Show more"
+                        onClick={(e) => readMoreClick(e)}
+                      />
                     ) : (
+                      // <Button
+                      //   sx={{ minWidth: "0px", padding: "0px", ml: "5px" }}
+                      //   centerRipple
+                      //   onClick={(e) => readMoreClick(e)}
+                      // >
+                      //   <RectangleContainer>
+                      //     <Rectangle>
+                      //       <Circle />
+                      //       <Circle />
+                      //       <Circle />
+                      //     </Rectangle>
+                      //   </RectangleContainer>
+                      // </Button>
                       <></>
                     )}
                   </Typography>

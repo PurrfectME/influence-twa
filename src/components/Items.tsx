@@ -41,16 +41,21 @@ export default function Items({
   setLoading,
 }: IItemsProps) {
   const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   return (
     <>
       <Grid container flexDirection={"column"} justifyContent={"start"}>
-        <Tabs value={value} onChange={handleChange} centered>
-          <Tab sx={{ color: "var(--tg-theme-tab-color)" }} label="Available" />
-          <Tab sx={{ color: "var(--tg-theme-tab-color)" }} label="Liked" />
-        </Tabs>
+        <Grid item>
+          <Tabs value={value} onChange={handleChange} centered>
+            <Tab
+              sx={{ color: "var(--tg-theme-tab-color)" }}
+              label="Available"
+            />
+            <Tab sx={{ color: "var(--tg-theme-tab-color)" }} label="Liked" />
+          </Tabs>
+        </Grid>
         <CustomTabPanel value={value} index={0}>
           <Grid mt={"15px"} container justifyContent={"center"} gap={"10px"}>
             {availableData.map((x, i) => (
@@ -91,7 +96,7 @@ export default function Items({
                 minWidth={"281px"}
               >
                 <FundItemWrapper
-                  nftsIndex={undefined} //TODO: FIX HERE
+                  nftsIndex={nftsIndex}
                   description={x.description}
                   amountToHelp={x.amountToHelp}
                   title={x.title}

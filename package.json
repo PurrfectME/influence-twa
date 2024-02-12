@@ -15,6 +15,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.14.17",
     "@orbs-network/ton-access": "^2.2.2",
     "@ramonak/react-progress-bar": "^5.0.3",
@@ -33,6 +34,7 @@
     "ton-core": "^0.46.0",
     "ton-crypto": "^3.2.0",
     "tonapi-sdk-js": "^1.0.1",
+    "tonweb": "^0.0.62",
     "use-local-storage": "^2.3.6",
     "vite-plugin-node-polyfills": "^0.7.0"
   },

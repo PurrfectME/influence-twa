@@ -19,7 +19,8 @@ import useNftCollection from "../../hooks/useNftCollection";
 import { BuyNft } from "../../components/BuyNft";
 import { useItems } from "../../hooks/useItems";
 import useNftItem from "../../hooks/useNftItem";
-import { useTonApiClient } from "../../hooks/useTonApi";
+import LocalActivityIcon from "@mui/icons-material/LocalActivity";
+import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 
 export const TonSymbol = (
   <svg
@@ -93,32 +94,59 @@ export default function Home() {
           {/* <button id="ton-connect-ultra"></button> */}
 
           {connected ? (
-            <Grid item ml={"20px"}>
-              <Card
-                sx={{
-                  display: "flex",
-                  paddingLeft: "20px",
-                  paddingRight: "20px",
-                  height: "36px",
-                }}
-                elevation={3}
-              >
-                <Grid
-                  container
-                  display={"flex"}
-                  flexDirection={"row"}
-                  alignItems={"center"}
+            <>
+              <Grid item ml={"20px"}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    paddingLeft: "20px",
+                    paddingRight: "20px",
+                    height: "36px",
+                  }}
+                  elevation={3}
                 >
-                  <Grid item mr={"5px"}>
-                    <h2>{tonBalance ? nanoToFixed(tonBalance) : 0}</h2>
+                  <Grid
+                    container
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                  >
+                    <Grid item mr={"5px"}>
+                      <h2>{tonBalance ? nanoToFixed(tonBalance) : 0}</h2>
+                    </Grid>
+                    <SvgIcon
+                      component={createSvgIcon(TonSymbol, "ASD")}
+                      inheritViewBox
+                    />
                   </Grid>
-                  <SvgIcon
-                    component={createSvgIcon(TonSymbol, "ASD")}
-                    inheritViewBox
-                  />
-                </Grid>
-              </Card>
-            </Grid>
+                </Card>
+              </Grid>
+
+              <Grid item ml={"20px"}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    paddingLeft: "20px",
+                    paddingRight: "20px",
+                    height: "36px",
+                  }}
+                  elevation={3}
+                >
+                  <Grid
+                    container
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                  >
+                    {nftsIndex.length != 0 ? (
+                      <LocalActivityIcon />
+                    ) : (
+                      <DoNotDisturbIcon />
+                    )}
+                  </Grid>
+                </Card>
+              </Grid>
+            </>
           ) : (
             <Grid item>
               <Snackbar
@@ -149,13 +177,14 @@ export default function Home() {
                 likedData={liked}
                 availableData={available}
               />
-
-              <Pagination
-                siblingCount={2}
-                count={pageAmount}
-                page={page}
-                onChange={handleChange}
-              />
+              <Grid item mt={"5vh"}>
+                <Pagination
+                  siblingCount={2}
+                  count={pageAmount}
+                  page={page}
+                  onChange={handleChange}
+                />
+              </Grid>
             </>
           ) : (
             <Grid
