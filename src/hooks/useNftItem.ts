@@ -21,21 +21,23 @@ export default function useNftItem() {
 
   useEffect(() => {
     async function getValidNfts() {
-      const endpoint = await getHttpEndpoint({
-        network: "testnet",
-        protocol: "json-rpc",
-      });
+      // const tonweb = new TonWeb(
+      //   new TonWeb.HttpProvider(
+      //     "https://testnet.toncenter.com/api/v2/jsonRPC",
+      //     {
+      //       apiKey:
+      //         "858fcb84f2c0a8f30a0f59f0b204436197069c2b7f9a5c0e0eadb9a687b62ef9",
+      //     }
+      //   )
+      // );
 
-      const tonweb = new TonWeb(new TonWeb.HttpProvider(endpoint));
+      // const history = await tonweb.getTransactions(
+      //   Address.parse(COLLECTION_ADDRESS)
+      // );
 
-      const history = await tonweb.getTransactions(
-        "0QDtut2EnJuBcNr_NUyH0akKXXdDbmMNkBxtRLeHnysAssyk",
-        100
-      );
+      // //TODO: проверить транзы тонвеб и тонклиента на мейннете если всё ок то оставить тонклиент пока что
 
-      //TODO: проверить транзы тонвеб и тонклиента на мейннете если всё ок то оставить тонклиент пока что
-
-      console.log("HISTORY", history);
+      // console.log("HISTORY", history);
 
       const result = (
         await tonApiClient.accounts.getAccountNftItems(wallet!.account.address)
@@ -78,7 +80,7 @@ export default function useNftItem() {
 
       const transactions = await client!.getTransactions(
         Address.parse(COLLECTION_ADDRESS),
-        { limit: 10 }
+        { limit: 100, inclusive: true }
       );
 
       const likedItemIds: number[] = [];

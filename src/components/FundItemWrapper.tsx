@@ -74,23 +74,23 @@ export default function FundItemWrapper({
       let likedByUser = false;
 
       for (let i = 0; i < nftsIndex.length; i++) {
-        sendLike(toNano(itemSeqno), nftsIndex[i])?.then((x) => {
-          if (!likedByUser) {
-            const data: ItemData[] = JSON.parse(localStorage.getItem("items")!);
+        sendLike(toNano(itemSeqno), nftsIndex[i]);
 
-            for (let i = 0; i < data.length; i++) {
-              const item = data[i];
+        if (!likedByUser) {
+          const data: ItemData[] = JSON.parse(localStorage.getItem("items")!);
 
-              if (item.id !== itemSeqno) {
-                continue;
-              }
+          for (let i = 0; i < data.length; i++) {
+            const item = data[i];
 
-              item.likes = item.likes + 1;
+            if (item.id !== itemSeqno) {
+              continue;
             }
-            likedByUser = true;
-            localStorage.setItem("items", JSON.stringify(data));
+
+            item.likes = item.likes + 1;
           }
-        });
+          likedByUser = true;
+          localStorage.setItem("items", JSON.stringify(data));
+        }
       }
     } else {
       console.log("EMPTY");
@@ -142,7 +142,7 @@ export default function FundItemWrapper({
                   component="h6"
                   lineHeight={1}
                 >
-                  {title}
+                  {title} {itemSeqno}
                 </Typography>
                 <Grid item height={"21vh"}>
                   <Typography
